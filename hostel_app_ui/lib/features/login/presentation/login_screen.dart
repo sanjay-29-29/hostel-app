@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/core/utils/validators.dart';
+import 'package:hostel_app/features/login/controller/auth_controller.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -14,6 +16,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   bool showPassword = false;
 
@@ -31,6 +35,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authControllerProvider);
+    final authController = ref.read(authControllerProvider.notifier);
+
     return IntroScaffold(
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -42,21 +49,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
             ),
             SizedBox(height: 32),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'EMAIL OR PHONE NO',
-                hintText: 'Email or phone number',
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'EMAIL OR PHONE NO',
+                      hintText: 'Email or phone number',
+                    ),
+                    validator: Validators.email,
+                  ),
+                  SizedBox(height: 32),
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'ENTER YOUR PASSWORD',
+                      hintText: 'Password',
+                    ),
+                    // validator: Validators.password,
+                    obscureText: !showPassword,
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: 32),
-            TextFormField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'ENTER YOUR PASSWORD',
-                hintText: 'Password',
-              ),
-              obscureText: !showPassword,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,29 +127,66 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             SizedBox(height: 32),
             FilledButton(
-              onPressed: () {},
-              child: Text(
-                'LOGIN',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              onPressed: authState.status == AuthStatus.loading
+                  ? null
+                  : () async {
+                      if (_formKey.currentState!.validate()) {
+                        bool auth = await authController.login(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+                        if (auth) {
+                          context.goNamed('home');
+                        }
+                      }
+                    },
+              style: ButtonStyle(),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (authState.status == AuthStatus.loading)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            margin: EdgeInsets.all(5),
+                            child: CircularProgressIndicator(strokeWidth: 2.0),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Text(
+                      'LOGIN',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                ],
               ),
             ),
             SizedBox(height: 32),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Don't have an account?"),
-                SizedBox(width: 8),
-                GestureDetector(
-                  onTap: () {
-                    context.goNamed('signup');
-                  },
-                  child: Text(
-                    'Sign Up',
-                    style: TextStyle(color: Color(ColorConstants.darkRed)),
-                  ),
-                ),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     Text("Don't have an account?"),
+            //     SizedBox(width: 8),
+            //     GestureDetector(
+            //       onTap: () {
+            //         context.goNamed('signup');
+            //       },
+            //       child: Text(
+            //         'Sign Up',
+            //         style: TextStyle(color: Color(ColorConstants.darkRed)),
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
