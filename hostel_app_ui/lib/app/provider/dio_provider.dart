@@ -18,7 +18,7 @@ final dioClientProvider = Provider<Dio>((ref) {
       onRequest: (options, handler) async {
         final token = await secureStorage.getToken();
         if (token != null) {
-          options.headers['Authorization'] = 'Token $token';
+          // options.headers['Authorization'] = 'Token $token';
         }
         return handler.next(options);
       },

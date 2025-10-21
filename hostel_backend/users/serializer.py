@@ -2,11 +2,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
+from hostels.models import Hostel
+from users.models import HostelMembership
+
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    hostels = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Hostel.objects.all(), source="hostel"
+    )
 
     def create(self, validated_data):
+        hostels = validated_data.pop("hostel")
         user = get_user_model().objects.create_user(
             email=validated_data["email"],
             password=validated_data["password"],
@@ -14,6 +21,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
         )
+        hostel_membership = [
+            HostelMembership(user=user, hostel=hostel) for hostel in hostels
+        ]
+        HostelMembership.objects.bulk_create(hostel_membership)
         return user
 
     class Meta:
@@ -24,6 +35,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "phone_number",
             "password",
             "email",
+            "hostels",
         ]
 
 
@@ -38,7 +50,7 @@ class UserRetrieveSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserUpdateSerializer(serializers.ModelSerializer):
+class PartialUserUpdateSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)
     password = serializers.CharField(write_only=True, required=False)
 
@@ -62,11 +74,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"confirm_password": "Passwords do not match."}
                 )
-            try:
-                pass
-                # validate_password(password)
-            except serializers.ValidationError as e:
-                raise serializers.ValidationError({"password": list(e.detail)})
 
         return attrs
 
@@ -80,3 +87,17 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             instance.save()
 
         return instance
+
+
+class FullUserUpdateSerializer(PartialUserUpdateSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "email",
+            "phone_number",
+            "first_name",
+            "last_name",
+            "password",
+            "confirm_password",
+            "role",
+        ]

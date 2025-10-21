@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
     "users",
+    "hostels",
 ]
 
 MIDDLEWARE = [
@@ -107,6 +108,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
     ],
+    # "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
 }
 
 
