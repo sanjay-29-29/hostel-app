@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
-import 'package:hostel_app/app/core/utils/validators.dart';
 import 'package:hostel_app/features/login/controller/auth_controller.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
 
@@ -37,6 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
     final authController = ref.read(authControllerProvider.notifier);
+    final error = authState.error;
 
     return IntroScaffold(
       body: Padding(
@@ -55,20 +54,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   TextFormField(
                     controller: _emailController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'EMAIL OR PHONE NO',
                       hintText: 'Email or phone number',
+                      errorText: error?.getFieldErrors('username')?[0],
                     ),
-                    validator: Validators.email,
+                    // validator: Validators.email,
                   ),
                   SizedBox(height: 32),
                   TextFormField(
                     controller: _passwordController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'ENTER YOUR PASSWORD',
                       hintText: 'Password',
+                      errorText: error?.getFieldErrors('password')?[0],
                     ),
-                    validator: Validators.password,
+                    // validator: Validators.password,
                     obscureText: !showPassword,
                   ),
                 ],
@@ -127,17 +128,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             SizedBox(height: 32),
             FilledButton(
-              onPressed:
-                  authState.status == AuthStatus.loading
-                      ? null
-                      : () async {
-                        if (_formKey.currentState!.validate()) {
-                          await authController.login(
-                            _emailController.text,
-                            _passwordController.text,
-                          );
-                        }
-                      },
+              onPressed: authState.status == AuthStatus.loading
+                  ? null
+                  : () async {
+                      if (_formKey.currentState!.validate()) {
+                        await authController.login(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+                      }
+                    },
               style: ButtonStyle(),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

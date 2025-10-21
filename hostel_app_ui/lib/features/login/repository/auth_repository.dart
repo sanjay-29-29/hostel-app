@@ -1,13 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
-import 'package:hostel_app/app/core/utils/toast_utils.dart';
+import 'package:hostel_app/app/core/result/result.dart';
 import 'package:hostel_app/features/login/model/signup_model.dart';
 import 'package:hostel_app/features/login/model/token_model.dart';
-import 'package:result_dart/result_dart.dart';
+import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 
 abstract class AuthRepository {
-  Future<Result<TokenModel>> login(String username, String password);
-  Future<Result<int>> signup(SignupModel signupModel);
+  Future<Result<TokenModel, BackendError>> login(
+    String username,
+    String password,
+  );
+  Future<Result<int, Map<String, List<String>>>> signup(
+    SignupModel signupModel,
+  );
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -16,7 +21,10 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this._dioClient);
 
   @override
-  Future<Result<TokenModel>> login(String username, String password) async {
+  Future<Result<TokenModel, BackendError>> login(
+    String username,
+    String password,
+  ) async {
     try {
       final response = await _dioClient.post(
         Endpoints.login,
@@ -24,17 +32,15 @@ class AuthRepositoryImpl extends AuthRepository {
       );
       return Success(TokenModel.fromJson(response.data));
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        ToastUtil.error('Incorrect username or password');
-      } else {
-        ToastUtil.error('Something went wrong');
-      }
-      return Failure(e);
+      final data = e.response?.data;
+      return Failure(BackendError.fromJson(data));
     }
   }
 
   @override
-  Future<Result<int>> signup(SignupModel signupModel) async {
+  Future<Result<int, Map<String, List<String>>>> signup(
+    SignupModel signupModel,
+  ) async {
     try {
       final response = await _dioClient.post(
         Endpoints.register,
@@ -42,7 +48,7 @@ class AuthRepositoryImpl extends AuthRepository {
       );
       return Success(response.statusCode!);
     } on DioException catch (e) {
-      return Failure(e);
+      return Failure(e.response?.data);
     }
   }
 }
