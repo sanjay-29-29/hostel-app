@@ -43,6 +43,7 @@ dependencies:
   dio: ^5.9.0
   toastification: ^3.0.3
   flutter_secure_storage: ^9.2.2
+  result_dart: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
   assets:
     - assets/images/common/
     - assets/images/getting_started/
+    - assets/images/home/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

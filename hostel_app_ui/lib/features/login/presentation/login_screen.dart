@@ -68,7 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       labelText: 'ENTER YOUR PASSWORD',
                       hintText: 'Password',
                     ),
-                    // validator: Validators.password,
+                    validator: Validators.password,
                     obscureText: !showPassword,
                   ),
                 ],
@@ -127,19 +127,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             SizedBox(height: 32),
             FilledButton(
-              onPressed: authState.status == AuthStatus.loading
-                  ? null
-                  : () async {
-                      if (_formKey.currentState!.validate()) {
-                        bool auth = await authController.login(
-                          _emailController.text,
-                          _passwordController.text,
-                        );
-                        if (auth) {
-                          context.goNamed('home');
+              onPressed:
+                  authState.status == AuthStatus.loading
+                      ? null
+                      : () async {
+                        if (_formKey.currentState!.validate()) {
+                          await authController.login(
+                            _emailController.text,
+                            _passwordController.text,
+                          );
                         }
-                      }
-                    },
+                      },
               style: ButtonStyle(),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

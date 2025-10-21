@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hostel_app/app/core/storage/secure_storage.dart';
+import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/app/provider/dio_provider.dart';
+import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/features/login/repository/auth_repository.dart';
 import 'package:toastification/toastification.dart';
 
@@ -28,32 +30,27 @@ class AuthController extends StateNotifier<AuthState> {
 
   AuthController(this._repository) : super(AuthState.initial());
 
-  Future<bool> login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     try {
       state = state.copyWith(status: AuthStatus.loading);
       final response = await _repository.login(username, password);
-      // await _repository.saveToken(token);
-      if (response.isSuccess) {
-        state = state.copyWith(status: AuthStatus.authenticated);
-        secureStorage.saveToken(response.data!.token);
-        toastification.show(
-          title: Text('Success'),
-          type: ToastificationType.success,
-          description: RichText(
-            text: const TextSpan(text: 'This is a sample toast message. '),
-          ),
-        );
-        return true;
-      } else {
-        state = state.copyWith(status: AuthStatus.unauthenticated);
-      }
+      response.fold(
+        (token) {
+          state = state.copyWith(status: AuthStatus.authenticated);
+          secureStorage.saveToken(token.token);
+          ToastUtil.success('Login Successfull');
+          router.pushNamed('home');
+        },
+        (error) {
+          state = state.copyWith(status: AuthStatus.unauthenticated);
+        },
+      );
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
         error: e.toString(),
       );
     }
-    return false;
   }
 
   Future<void> logout() async {

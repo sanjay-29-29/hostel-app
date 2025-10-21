@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
+import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/features/login/model/signup_model.dart';
 import 'package:hostel_app/features/login/model/token_model.dart';
-import 'package:hostel_app/features/shared/model/result_model.dart';
+import 'package:result_dart/result_dart.dart';
 
 abstract class AuthRepository {
   Future<Result<TokenModel>> login(String username, String password);
@@ -21,9 +22,14 @@ class AuthRepositoryImpl extends AuthRepository {
         Endpoints.login,
         data: {'username': username, 'password': password},
       );
-      return Result.success(TokenModel.fromJson(response.data));
+      return Success(TokenModel.fromJson(response.data));
     } on DioException catch (e) {
-      return Result.failure(e.message ?? 'Error');
+      if (e.response?.statusCode == 400) {
+        ToastUtil.error('Incorrect username or password');
+      } else {
+        ToastUtil.error('Something went wrong');
+      }
+      return Failure(e);
     }
   }
 
@@ -34,9 +40,9 @@ class AuthRepositoryImpl extends AuthRepository {
         Endpoints.register,
         data: signupModel.toJson(),
       );
-      return Result.success(response.statusCode!);
+      return Success(response.statusCode!);
     } on DioException catch (e) {
-      return Result.failure(e.message ?? 'Error');
+      return Failure(e);
     }
   }
 }

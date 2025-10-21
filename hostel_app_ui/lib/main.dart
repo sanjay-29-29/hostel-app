@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
-import 'package:hostel_app/app/provider/router_provider.dart';
+import 'package:hostel_app/app/router/router.dart';
 import 'package:toastification/toastification.dart';
 
 void main() {
@@ -14,8 +14,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(routerProvider);
-
     return ToastificationWrapper(
       child: MaterialApp.router(
         title: 'Hostel App',
@@ -48,7 +46,9 @@ class MyApp extends ConsumerWidget {
             ),
           ),
         ),
-        routerConfig: router,
+        routerDelegate: router.routerDelegate,
+        routeInformationParser: router.routeInformationParser,
+        routeInformationProvider: router.routeInformationProvider,
       ),
     );
   }
