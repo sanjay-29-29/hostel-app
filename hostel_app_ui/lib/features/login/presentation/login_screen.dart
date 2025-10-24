@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/login/controller/auth_controller.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
@@ -48,10 +49,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               "LET'S GET STARTED",
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 32),
             ),
-            ResponsiveSizedBoxfor (let i = 0; i < 5; i++) {
-  console.log('Hello world!');
-}
-(height: 32),
+            ResponsiveSizedBox(height: 32),
             Form(
               key: _formKey,
               child: Column(
