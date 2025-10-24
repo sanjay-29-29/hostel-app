@@ -69,12 +69,21 @@ flutter:
         - asset: assets/fonts/poppins-Black.ttf
         - asset: assets/fonts/poppins-ExtraBold.ttf
           weight: 900
-        - asset: assets/fonts/poppins-Black.ttf
+        - asset: assets/fonts/poppins-Bold.ttf
           weight: 700
         - asset: assets/fonts/poppins-ExtraLight.ttf
           weight: 200
         - asset: assets/fonts/poppins-Light.ttf
           weight: 300
+        - asset: assets/fonts/poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/poppins-Thin.ttf
+          weight: 100
+
 
 flutter_launcher_icons:
   android: true

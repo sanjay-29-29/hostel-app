@@ -7,7 +7,7 @@ import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/features/login/repository/auth_repository.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 
-enum AuthStatus { authenticated, unauthenticated, loading }
+enum AuthStatus { authenticated, unauthenticated, loading, userNotExist, userExist}
 
 class AuthState {
   final AuthStatus status;
@@ -59,6 +59,26 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     state = state.copyWith(status: AuthStatus.unauthenticated);
+  }
+
+  Future<void> isUserExist(String username) async {
+    try{
+     state = state.copyWith(status: AuthStatus.loading);
+     final response = await _repository.isUserExistRepo(username);
+     response.fold(
+       onSuccess: (_){
+         state = state.copyWith(status: AuthStatus.userExist);
+       },
+       onFailure: (error){
+         state = state.copyWith(
+           status: AuthStatus.userNotExist,
+           error: error,
+         );
+       },
+     );
+    }catch(e){
+      state = state.copyWith(status: AuthStatus.unauthenticated);
+    }
   }
 }
 

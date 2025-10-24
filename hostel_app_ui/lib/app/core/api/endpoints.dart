@@ -3,4 +3,5 @@ class Endpoints {
 
   static const String login = 'login/';
   static const String register = 'register/';
+  static const String isUserExist = 'is_user_exist/';
 }

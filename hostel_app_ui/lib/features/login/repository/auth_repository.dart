@@ -13,6 +13,8 @@ abstract class AuthRepository {
   Future<Result<int, Map<String, List<String>>>> signup(
     SignupModel signupModel,
   );
+
+  Future<Result<void, BackendError>> isUserExistRepo(String username);
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -49,6 +51,19 @@ class AuthRepositoryImpl extends AuthRepository {
       return Success(response.statusCode!);
     } on DioException catch (e) {
       return Failure(e.response?.data);
+    }
+  }
+
+  @override
+  Future<Result<void, BackendError>> isUserExistRepo(String username) async {
+    try {
+      final response = await _dioClient.post(
+        Endpoints.isUserExist,
+        data: {'username': username},
+      );
+      return Success(response.statusCode!);
+    } on DioException catch (e) {
+      return Failure(BackendError.fromJson(e.response?.data));
     }
   }
 }

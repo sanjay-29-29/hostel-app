@@ -32,3 +32,4 @@ class ResponsiveSizedBox extends StatelessWidget {
     );
   }
 }
+      

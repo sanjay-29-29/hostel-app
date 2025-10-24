@@ -41,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return IntroScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -56,78 +56,92 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   TextFormField(
                     controller: _emailController,
+                    textAlign: TextAlign.center,
                     decoration: InputDecoration(
-                      labelText: 'EMAIL OR PHONE NO',
+                      label: Center(
+                        child: ResponsiveText(
+                          'EMAIL OR PHONE NO',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                      ),
                       hintText: 'Email or phone number',
                       errorText: error?.getFieldErrors('username')?[0],
                     ),
                     // validator: Validators.email,
                   ),
-                  SizedBox(height: 32),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'ENTER YOUR PASSWORD',
-                      hintText: 'Password',
-                      errorText: error?.getFieldErrors('password')?[0],
-                    ),
-                    // validator: Validators.password,
-                    obscureText: !showPassword,
+                  ResponsiveSizedBox(height: 32),
+                  Column(
+                    children: [
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'ENTER YOUR PASSWORD',
+                          hintText: 'Password',
+                          errorText: error?.getFieldErrors('password')?[0],
+                        ),
+                        // validator: Validators.password,
+                        obscureText: !showPassword,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: ResponsiveText(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                decoration: TextDecoration.underline,
+                                decorationColor: ColorConstants.darkRed,
+                                color: ColorConstants.darkRed,
+                              ),
+                            ),
+                          ),
+                          FilledButton(
+                            style: ButtonStyle(
+                              minimumSize: WidgetStatePropertyAll(Size.zero),
+                              padding: WidgetStatePropertyAll(
+                                EdgeInsets.fromLTRB(4, 2, 4, 2),
+                              ),
+                              shape: WidgetStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                showPassword = !showPassword;
+                              });
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ResponsiveText(
+                                  !showPassword ? 'Show' : 'Hide',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                showPassword
+                                    ? Icon(Icons.visibility)
+                                    : Icon(Icons.visibility_off),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                      decoration: TextDecoration.underline,
-                      decorationColor: ColorConstants.darkRed,
-                      color: ColorConstants.darkRed,
-                    ),
-                  ),
-                ),
-                FilledButton(
-                  style: ButtonStyle(
-                    minimumSize: WidgetStatePropertyAll(Size.zero),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.fromLTRB(4, 2, 4, 2),
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      showPassword = !showPassword;
-                    });
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        !showPassword ? 'Show' : 'Hide',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      showPassword
-                          ? Icon(Icons.visibility)
-                          : Icon(Icons.visibility_off),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+
             SizedBox(height: 32),
             FilledButton(
               onPressed: authState.status == AuthStatus.loading
