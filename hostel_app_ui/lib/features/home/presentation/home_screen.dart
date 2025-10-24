@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
-import 'package:hostel_app/app/core/constants/image_constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

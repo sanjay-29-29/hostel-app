@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
+import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
 
 class GettingStarted extends ConsumerWidget {
@@ -16,20 +17,20 @@ class GettingStarted extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset(ImageConstants.assuringTheBest),
-          Text(
+          ResponsiveText(
             'WELCOME',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
           ),
           Image.asset(ImageConstants.kecLogo),
-          Text(
+          ResponsiveText(
             'HOSTEL LIFE MADE EASY',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, fontFamily: 'Poppins'),
           ),
           FilledButton(
             onPressed: () {
               context.goNamed('login');
             },
-            child: Text(
+            child: ResponsiveText(
               'GET STARTED',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
             ),

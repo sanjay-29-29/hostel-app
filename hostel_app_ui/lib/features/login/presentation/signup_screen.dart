@@ -108,7 +108,7 @@ class _SignupScreen extends ConsumerState<SignupScreen> {
                   },
                   child: Text(
                     'Sign Up',
-                    style: TextStyle(color: Color(ColorConstants.darkRed)),
+                    style: TextStyle(color: ColorConstants.darkRed),
                   ),
                 ),
               ],

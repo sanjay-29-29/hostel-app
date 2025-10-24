@@ -16,7 +16,8 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ToastificationWrapper(
       child: MaterialApp.router(
-        title: 'Hostel App',
+        title: 'hostel_app',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.poppinsTextTheme(),
           progressIndicatorTheme: ProgressIndicatorThemeData(
@@ -25,15 +26,15 @@ class MyApp extends ConsumerWidget {
           inputDecorationTheme: InputDecorationTheme(
             floatingLabelBehavior: FloatingLabelBehavior.always,
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(ColorConstants.darkRed)),
+              borderSide: BorderSide(color: ColorConstants.darkRed),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color(ColorConstants.darkRed)),
+              borderSide: BorderSide(color: ColorConstants.darkRed),
             ),
             labelStyle: TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 14,
-              color: Color(ColorConstants.darkRed),
+              color: ColorConstants.darkRed,
             ),
           ),
           filledButtonTheme: FilledButtonThemeData(
@@ -41,7 +42,7 @@ class MyApp extends ConsumerWidget {
               backgroundColor: WidgetStateProperty.resolveWith<Color>((
                 Set<WidgetState> states,
               ) {
-                return Color(ColorConstants.darkRed);
+                return ColorConstants.darkRed;
               }),
             ),
           ),

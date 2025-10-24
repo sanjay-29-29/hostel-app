@@ -5,7 +5,7 @@ import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/app/provider/dio_provider.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/features/login/repository/auth_repository.dart';
-import 'package:hostel_app/features/shared/models/error/error_model.dart';
+import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 
 enum AuthStatus { authenticated, unauthenticated, loading }
 
