@@ -1,44 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:toastification/toastification.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class ToastUtil {
-  /// Success Toast
-  static void success(String message, {String title = 'Success'}) {
-    toastification.show(
-      autoCloseDuration: Duration(seconds: 2),
-      type: ToastificationType.success,
-      title: Text(title),
-      description: Text(message),
+class ToastHelper {
+  static void showSuccess(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green.shade600,
+      textColor: Colors.white,
+      fontSize: 15,
     );
   }
 
-  /// Error Toast
-  static void error(String message, {String title = 'Error'}) {
-    toastification.show(
-      autoCloseDuration: Duration(seconds: 2),
-      type: ToastificationType.error,
-      title: Text(title),
-      description: Text(message),
+  static void showError(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red.shade600,
+      textColor: Colors.white,
+      fontSize: 15,
     );
   }
 
-  /// Warning Toast
-  static void warning(String message, {String title = 'Warning'}) {
-    toastification.show(
-      autoCloseDuration: Duration(seconds: 2),
-      type: ToastificationType.warning,
-      title: Text(title),
-      description: Text(message),
-    );
-  }
-
-  /// Info Toast
-  static void info(String message, {String title = 'Info'}) {
-    toastification.show(
-      autoCloseDuration: Duration(seconds: 2),
-      type: ToastificationType.info,
-      title: Text(title),
-      description: Text(message),
+  static void showInfo(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.blue.shade600,
+      textColor: Colors.white,
+      fontSize: 15,
     );
   }
 }

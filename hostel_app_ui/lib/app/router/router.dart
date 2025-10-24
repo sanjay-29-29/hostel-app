@@ -5,6 +5,8 @@ import 'package:hostel_app/features/home/presentation/home_screen.dart';
 import 'package:hostel_app/features/login/presentation/getting_started_screen.dart';
 import 'package:hostel_app/features/login/presentation/login_screen.dart';
 import 'package:hostel_app/features/login/presentation/signup_screen.dart';
+import 'package:hostel_app/features/member/add_member_screen.dart';
+import 'package:hostel_app/features/member/manage_member_screen.dart';
 import 'package:hostel_app/splash.dart';
 
 final router = GoRouter(
@@ -34,6 +36,16 @@ final router = GoRouter(
       path: RouteConstants.home,
       name: RouteConstantsNames.home,
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: RouteConstants.addMember,
+      name: RouteConstantsNames.addMember,
+      builder: (context, state) => const AddMemberScreen(),
+    ),
+    GoRoute(
+      path: RouteConstants.manageMembers,
+      name: RouteConstantsNames.manageMembers,
+      builder: (context, state) => const ManageMemberScreen(),
     ),
   ],
   errorBuilder: (context, state) =>

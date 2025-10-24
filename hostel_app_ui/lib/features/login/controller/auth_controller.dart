@@ -37,14 +37,14 @@ class AuthController extends StateNotifier<AuthState> {
         onSuccess: (token) {
           state = state.copyWith(status: AuthStatus.authenticated);
           secureStorage.saveToken(token.token);
-          ToastUtil.success('Login Successfull');
+          ToastHelper.showSuccess('Login Successfull');
           router.pushNamed('home');
         },
         onFailure: (error) {
           if (error.detail != null) {
-            ToastUtil.error(error.detail ?? 'Something went wrong');
+            ToastHelper.showError(error.detail ?? 'Something went wrong');
           } else if (error.nonFieldErrors != null) {
-            ToastUtil.error(error.nonFieldErrors ?? 'Something went wrong');
+            ToastHelper.showError(error.nonFieldErrors ?? 'Something went wrong');
           }
           state = state.copyWith(
             status: AuthStatus.unauthenticated,

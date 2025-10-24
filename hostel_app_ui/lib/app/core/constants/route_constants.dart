@@ -4,6 +4,8 @@ class RouteConstants {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String home = '/home';
+  static const String manageMembers = '/manage-members';
+  static const String addMember = '/add-member';
 }
 
 class RouteConstantsNames {
@@ -12,4 +14,6 @@ class RouteConstantsNames {
   static const String login = 'login';
   static const String signup = 'signup';
   static const String home = 'home';
+  static const String manageMembers = 'manage-members';
+  static const String addMember = 'add-member';
 }

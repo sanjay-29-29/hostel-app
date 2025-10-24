@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
-import 'package:toastification/toastification.dart';
 
 void main() {
   runApp(ProviderScope(child: const MyApp()));
@@ -14,43 +13,41 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ToastificationWrapper(
-      child: MaterialApp.router(
-        title: 'hostel_app',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(),
-          progressIndicatorTheme: ProgressIndicatorThemeData(
-            color: Colors.white,
+    return MaterialApp.router(
+      title: 'hostel_app',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: Colors.white,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: ColorConstants.darkRed),
           ),
-          inputDecorationTheme: InputDecorationTheme(
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: ColorConstants.darkRed),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: ColorConstants.darkRed),
-            ),
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 14,
-              color: ColorConstants.darkRed,
-            ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: ColorConstants.darkRed),
           ),
-          filledButtonTheme: FilledButtonThemeData(
-            style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.resolveWith<Color>((
-                Set<WidgetState> states,
-              ) {
-                return ColorConstants.darkRed;
-              }),
-            ),
+          labelStyle: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 14,
+            color: ColorConstants.darkRed,
           ),
         ),
-        routerDelegate: router.routerDelegate,
-        routeInformationParser: router.routeInformationParser,
-        routeInformationProvider: router.routeInformationProvider,
+        filledButtonTheme: FilledButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith<Color>((
+              Set<WidgetState> states,
+            ) {
+              return ColorConstants.darkRed;
+            }),
+          ),
+        ),
       ),
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
     );
   }
 }
