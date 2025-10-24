@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework.authtoken.serializers import authenticate
 
 from hostels.models import Hostel
+from hostels.serializers import GetHostelDropdownDetailsSerializer
 from users.models import HostelMembership
 
 
@@ -89,15 +91,12 @@ class PartialUserUpdateSerializer(serializers.ModelSerializer):
         return instance
 
 
-class FullUserUpdateSerializer(PartialUserUpdateSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = [
-            "email",
-            "phone_number",
-            "first_name",
-            "last_name",
-            "password",
-            "confirm_password",
-            "role",
-        ]
+class UserCreateInfoRetrieveSerializer(serializers.Serializer):
+    hostels = GetHostelDropdownDetailsSerializer(many=True, read_only=True)
+    roles = serializers.SerializerMethodField()
+
+    def get_roles(self, data):
+        response = []
+        for db_value, display_value in get_user_model().Role.choices:
+            response.append({"label": display_value, "value": db_value})
+        return response

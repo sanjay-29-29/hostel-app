@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
+    "django_filters",
     "users",
     "hostels",
+    "students",
 ]
 
 MIDDLEWARE = [
@@ -108,6 +110,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
     ],
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     # "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
 }
 
