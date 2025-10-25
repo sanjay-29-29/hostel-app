@@ -8,11 +8,11 @@ from users.models import HostelMembership
 @admin.register(get_user_model())
 class CustomUserAdmin(UserAdmin):
     ordering = ("email",)
-    list_display = ("email", "first_name", "last_name", "is_staff")
+    list_display = ("email", "name", "is_staff")
     search_fields = ("first_name", "last_name", "email")
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
-        (("Personal info"), {"fields": ("first_name", "last_name", "phone_number")}),
+        (None, {"fields": ("email", "password", "role")}),
+        (("Personal info"), {"fields": ("name", "phone_number")}),
         (
             ("Permissions"),
             {
@@ -34,8 +34,7 @@ class CustomUserAdmin(UserAdmin):
                 "classes": ("wide",),
                 "fields": (
                     "email",
-                    "first_name",
-                    "last_name",
+                    "name",
                     "role",
                     "password1",
                     "password2",

@@ -1,11 +1,17 @@
-from rest_framework.authtoken.views import obtain_auth_token
-from django.urls import path
-from rest_framework.generics import RetrieveAPIView
+from django.urls import path, include
 
 import users.views as users_views
 
 urlpatterns = [
-    path("login/", obtain_auth_token),
-    path("register/", users_views.CreateUserView.as_view()),
-    path("user/", users_views.RetrieveAndUpdateUserView.as_view()),
+    path("token/", users_views.UserLoginView.as_view()),
+    path(
+        "users/",
+        include(
+            [
+                path("", users_views.CreateUserView.as_view()),
+                path("", users_views.RetrieveAndUpdateUserView.as_view()),
+                path("all/", users_views.SearchAllUsersView.as_view()),
+            ]
+        ),
+    ),
 ]

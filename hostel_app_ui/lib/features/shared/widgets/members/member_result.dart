@@ -3,31 +3,16 @@ import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
-import 'package:hostel_app/features/shared/models/member/member_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
 class MemberList extends StatelessWidget {
-  final List<ManageMember> members;
-  final String searchQuery;
+  final List<UserModel> users;
 
-  const MemberList({
-    super.key,
-    required this.members,
-    required this.searchQuery,
-  });
+  const MemberList({super.key, required this.users});
 
   @override
   Widget build(BuildContext context) {
-    final filteredMembers = members.where((member) {
-      final query = searchQuery.toLowerCase();
-      final name = member.name.toLowerCase();
-      final role = member.role.toLowerCase();
-      final hostel = member.hostel.toLowerCase();
-      return name.contains(query) ||
-          role.contains(query) ||
-          hostel.contains(query);
-    }).toList();
-
-    if (filteredMembers.isEmpty) {
+    if (users.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.only(top: 40),
@@ -40,13 +25,13 @@ class MemberList extends StatelessWidget {
     }
 
     return ListView.separated(
-      itemCount: filteredMembers.length,
+      itemCount: users.length,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       separatorBuilder: (_, __) =>
           const Divider(height: 1, color: Colors.black12),
       itemBuilder: (context, index) {
-        final member = filteredMembers[index];
-        final name = member.name;
+        final user = users[index];
+        final name = user.name;
         final firstLetter = name.isNotEmpty
             ? name.trim()[0].toUpperCase()
             : '?';
@@ -55,7 +40,7 @@ class MemberList extends StatelessWidget {
           onTap: () {
             router.pushNamed(
               RouteConstantsNames.profile,
-              extra: {'member': member, 'canEdit': true},
+              extra: {'member': user, 'canEdit': true},
             );
           },
           child: ListTile(
@@ -77,27 +62,21 @@ class MemberList extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
             ),
             subtitle: ResponsiveText(
-              '${member.role}, ${member.hostel}',
+              '${user.role}',
               style: const TextStyle(color: Color(0xFF686868), fontSize: 14),
             ),
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: member.status.toLowerCase() == 'new'
-                    ? Colors.blue.shade100
-                    : member.status.toLowerCase() == 'active'
+                color: user.isActive
                     ? Colors.green.shade100
                     : Colors.red.shade100,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                member.status,
+                user.isActive ? 'Active' : 'Inactive',
                 style: TextStyle(
-                  color: member.status.toLowerCase() == 'new'
-                      ? Colors.blue
-                      : member.status.toLowerCase() == 'active'
-                      ? Colors.green
-                      : Colors.red,
+                  color: user.isActive ? Colors.green : Colors.red,
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 
-class MemberFilterBar extends StatelessWidget {
-  final String selectedStatus;
-  final String sortOrder;
-  final ValueChanged<String> onStatusChanged;
-  final ValueChanged<String> onSortChanged;
+class MemberFilterBar<R extends Enum, L extends Enum> extends StatelessWidget {
+  final List<R> leftDropdown;
+  final R leftSelectedValue;
+  final ValueChanged<R?> leftChanged;
+  final List<L> rightDropdownValue;
+  final L rightSelectedValue;
+  final ValueChanged<L?> rightChanged;
 
   const MemberFilterBar({
     super.key,
-    required this.selectedStatus,
-    required this.sortOrder,
-    required this.onStatusChanged,
-    required this.onSortChanged,
+    required this.leftDropdown,
+    required this.leftSelectedValue,
+    required this.leftChanged,
+    required this.rightDropdownValue,
+    required this.rightSelectedValue,
+    required this.rightChanged,
   });
 
   @override
@@ -29,40 +33,21 @@ class MemberFilterBar extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const SizedBox(width: 8),
-              DropdownButton<String>(
-                value: selectedStatus,
-                items: const [
-                  DropdownMenuItem(
-                    value: 'All',
-                    child: ResponsiveText(
-                      'All',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'New',
-                    child: ResponsiveText(
-                      'New',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Active',
-                    child: ResponsiveText(
-                      'Active',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Inactive',
-                    child: ResponsiveText(
-                      'Inactive',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ],
+              DropdownButton<R>(
+                value: leftSelectedValue,
+                items: leftDropdown
+                    .map(
+                      (val) => DropdownMenuItem<R>(
+                        value: val,
+                        child: ResponsiveText(
+                          val.name,
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (value) {
-                  if (value != null) onStatusChanged(value);
+                  // if (value != null) onStatusChanged();
                 },
                 borderRadius: BorderRadius.circular(12),
                 dropdownColor: Colors.white,
@@ -79,26 +64,21 @@ class MemberFilterBar extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
               const SizedBox(width: 8),
-              DropdownButton<String>(
-                value: sortOrder,
-                items: const [
-                  DropdownMenuItem(
-                    value: 'A-Z',
-                    child: ResponsiveText(
-                      'A - Z',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'Z-A',
-                    child: ResponsiveText(
-                      'Z - A',
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ],
+              DropdownButton<L>(
+                value: rightSelectedValue,
+                items: rightDropdownValue
+                    .map(
+                      (val) => DropdownMenuItem<L>(
+                        value: val,
+                        child: ResponsiveText(
+                          val.name,
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (value) {
-                  if (value != null) onSortChanged(value);
+                  // if (value != null) onSortChanged(value);
                 },
                 borderRadius: BorderRadius.circular(12),
                 dropdownColor: Colors.white,

@@ -27,7 +27,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               title1: 'ADD',
               title2: 'NEW MEMBER',
               isProfilePage: true,
-              member: widget.member,
+              user: widget.member,
               canEdit: widget.canEdit,
             ),
             Padding(

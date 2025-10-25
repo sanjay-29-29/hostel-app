@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
-import 'package:hostel_app/features/shared/models/member/member_model.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
 
 class SplashScreen extends StatefulWidget {

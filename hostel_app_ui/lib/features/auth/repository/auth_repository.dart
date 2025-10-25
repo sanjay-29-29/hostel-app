@@ -1,18 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
 import 'package:hostel_app/app/core/result/result.dart';
-import 'package:hostel_app/features/login/model/signup_model.dart';
-import 'package:hostel_app/features/login/model/token_model.dart';
+import 'package:hostel_app/features/auth/model/signup_model.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
 abstract class AuthRepository {
-  Future<Result<TokenModel, BackendError>> login(
+  Future<Result<(UserModel, String), BackendError>> login(
     String username,
     String password,
   );
-  Future<Result<int, Map<String, List<String>>>> signup(
-    SignupModel signupModel,
-  );
+  Future<Result<int, BackendError>> signup(SignupModel signupModel);
 
   Future<Result<void, BackendError>> isUserExistRepo(String username);
 }
@@ -23,7 +21,7 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(this._dioClient);
 
   @override
-  Future<Result<TokenModel, BackendError>> login(
+  Future<Result<(UserModel, String), BackendError>> login(
     String username,
     String password,
   ) async {
@@ -32,7 +30,10 @@ class AuthRepositoryImpl extends AuthRepository {
         Endpoints.login,
         data: {'username': username, 'password': password},
       );
-      return Success(TokenModel.fromJson(response.data));
+      return Success((
+        UserModel.fromJson(response.data),
+        response.data['token'],
+      ));
     } on DioException catch (e) {
       final data = e.response?.data;
       return Failure(BackendError.fromJson(data));
@@ -40,9 +41,7 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Result<int, Map<String, List<String>>>> signup(
-    SignupModel signupModel,
-  ) async {
+  Future<Result<int, BackendError>> signup(SignupModel signupModel) async {
     try {
       final response = await _dioClient.post(
         Endpoints.register,

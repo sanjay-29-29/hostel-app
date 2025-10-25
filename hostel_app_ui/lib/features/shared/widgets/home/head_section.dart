@@ -5,11 +5,11 @@ import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_container.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
-import 'package:hostel_app/features/shared/models/member/member_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
 class HomeHeader extends StatelessWidget {
-  final ManageMember member;
-  const HomeHeader({super.key, required this.member});
+  final UserModel user;
+  const HomeHeader({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +54,8 @@ class HomeHeader extends StatelessWidget {
                         radius: 48,
                         backgroundColor: ColorConstants.profileBlue,
                         child: ResponsiveText(
-                          member.name.isNotEmpty
-                              ? member.name.trim()[0].toUpperCase()
+                          user.name.isNotEmpty
+                              ? user.name.trim()[0].toUpperCase()
                               : '?',
                           style: TextStyle(
                             color: Colors.black,
@@ -68,7 +68,7 @@ class HomeHeader extends StatelessWidget {
                         width: 14,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: (member.status.toLowerCase() == 'active')
+                          color: user.isActive 
                               ? Colors.green
                               : Colors.red,
 
@@ -79,15 +79,15 @@ class HomeHeader extends StatelessWidget {
                     ],
                   ),
                   ResponsiveText(
-                    'Welcome ${member.name}',
+                    'Welcome ${user.name}',
                     style: TextStyle(
-                      fontSize: member.name.length > 10 ? 24 : 32,
+                      fontSize: user.name.length > 10 ? 24 : 32,
                       color: Colors.black,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   ResponsiveText(
-                    '${member.hostel}  - ${member.role}',
+                    '${user.role}',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,

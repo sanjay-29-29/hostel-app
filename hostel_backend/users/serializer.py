@@ -44,8 +44,7 @@ class UserRetrieveSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = [
             "email",
-            "first_name",
-            "last_name",
+            "name",
             "phone_number",
         ]
 
@@ -59,8 +58,7 @@ class PartialUserUpdateSerializer(serializers.ModelSerializer):
         fields = [
             "email",
             "phone_number",
-            "first_name",
-            "last_name",
+            "name",
             "password",
             "confirm_password",
         ]
@@ -95,9 +93,21 @@ class FullUserUpdateSerializer(PartialUserUpdateSerializer):
         fields = [
             "email",
             "phone_number",
-            "first_name",
-            "last_name",
+            "name",
             "password",
             "confirm_password",
             "role",
+        ]
+
+
+class FetchAllUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "email",
+            "phone_number",
+            "name",
+            "role",
+            "date_joined",
+            "is_active",
         ]

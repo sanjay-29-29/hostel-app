@@ -3,11 +3,11 @@ import 'package:hostel_app/app/core/constants/assets_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
-import 'package:hostel_app/features/shared/models/member/member_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
 class HomeBody extends StatelessWidget {
-  final ManageMember member;
-  const HomeBody({super.key, required this.member});
+  final UserModel user;
+  const HomeBody({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class HomeBody extends StatelessWidget {
             onTap: () {
               router.pushNamed(
                 RouteConstantsNames.profile,
-                extra: {'member': member, 'canEdit': false},
+                extra: {'member': user, 'canEdit': false},
               );
             },
           ),

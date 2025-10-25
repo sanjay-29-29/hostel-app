@@ -6,19 +6,20 @@ import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_container.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
-import 'package:hostel_app/features/shared/models/member/member_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
 class HeaderSection extends StatelessWidget {
   final String title1;
   final String title2;
   final bool isProfilePage;
-  final ManageMember? member;
+  final UserModel? user;
   final bool canEdit;
+
   HeaderSection({
     this.title1 = 'Title1',
     this.title2 = 'Title2',
     this.isProfilePage = false,
-    this.member,
+    this.user,
     this.canEdit = false,
   });
 
@@ -68,7 +69,7 @@ class HeaderSection extends StatelessWidget {
                     InkWell(
                       onTap: () => router.pushNamed(
                         RouteConstantsNames.editProfile,
-                        extra: member,
+                        extra: user,
                       ),
                       borderRadius: BorderRadius.circular(8),
                       child: ResponsiveContainer(
@@ -134,7 +135,7 @@ class HeaderSection extends StatelessWidget {
                 ],
               ),
             ),
-          if (isProfilePage)
+          if (user != null && isProfilePage)
             Positioned(
               top: 100,
               left: 24,
@@ -151,8 +152,8 @@ class HeaderSection extends StatelessWidget {
                           radius: 48,
                           backgroundColor: ColorConstants.profileBlue,
                           child: ResponsiveText(
-                            member != null && member!.name.isNotEmpty
-                                ? member!.name.trim()[0].toUpperCase()
+                            user != null && user!.name.isNotEmpty
+                                ? user!.name.trim()[0].toUpperCase()
                                 : '?',
                             style: TextStyle(
                               color: Colors.black,
@@ -165,11 +166,7 @@ class HeaderSection extends StatelessWidget {
                           width: 14,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: (member?.status.toLowerCase() == 'active')
-                                ? Colors.green
-                                : (member?.status.toLowerCase() == 'inactive')
-                                ? Colors.red
-                                : Colors.blue,
+                            color: user!.isActive ? Colors.green : Colors.red,
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 2),
                           ),
@@ -177,7 +174,7 @@ class HeaderSection extends StatelessWidget {
                       ],
                     ),
                     ResponsiveText(
-                      member?.name ?? 'SAMPLE NAME',
+                      user?.name ?? 'SAMPLE NAME',
                       style: TextStyle(
                         fontSize: 32,
                         color: Colors.black,
@@ -200,27 +197,16 @@ class HeaderSection extends StatelessWidget {
                             width: 10,
                             height: 10,
                             decoration: BoxDecoration(
-                              color: (member?.status.toLowerCase() == 'active')
-                                  ? Colors.green
-                                  : (member?.status.toLowerCase() == 'inactive')
-                                  ? Colors.red
-                                  : Colors.blue,
+                              color: user!.isActive ? Colors.green : Colors.red,
                               shape: BoxShape.circle,
                             ),
                           ),
                           SizedBox(width: 8),
                           ResponsiveText(
-                            (member?.status != null &&
-                                    member!.status.isNotEmpty)
-                                ? '${member!.status[0].toUpperCase()}${member!.status.substring(1).toLowerCase()}'
-                                : 'New',
+                            user!.isActive ? 'Active' : 'Inactive',
                             style: TextStyle(
                               fontSize: 14,
-                              color: (member?.status.toLowerCase() == 'active')
-                                  ? Colors.green
-                                  : (member?.status.toLowerCase() == 'inactive')
-                                  ? Colors.red
-                                  : Colors.blue,
+                              color: user!.isActive ? Colors.green : Colors.red,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
