@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
@@ -46,6 +48,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._repository) : super(AuthState.initial());
 
+  Future<void> restoreSession() async {
+    try {
+      String? user = await secureStorage.getKey('user');
+      if (user == null) {
+        router.goNamed(RouteConstantsNames.login);
+        return;
+      }
+      final userModel = UserModel.fromJson(jsonDecode(user));
+      state = state.copyWith(user: userModel, status: AuthStatus.authenticated);
+      router.goNamed(RouteConstantsNames.home);
+    } catch (e) {
+      router.goNamed(RouteConstantsNames.login);
+    }
+  }
+
   Future<void> login(String username, String password) async {
     try {
       state = state.copyWith(status: AuthStatus.loading);
@@ -57,8 +74,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
             status: AuthStatus.authenticated,
             user: userModel,
           );
-          print(userModel.email);
-          secureStorage.saveToken(token);
+          secureStorage.saveKey('user', jsonEncode(userModel.toJson()));
+          secureStorage.saveKey('token', token);
           ToastHelper.showSuccess('Login Successfull');
           router.goNamed(RouteConstantsNames.home);
         },
@@ -66,7 +83,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
           if (error.detail != null) {
             ToastHelper.showError(error.detail ?? 'Something went wrong');
           } else if (error.nonFieldErrors != null) {
-            ToastHelper.showError(error.nonFieldErrors ?? 'Something went wrong');
+            ToastHelper.showError(
+              error.nonFieldErrors ?? 'Something went wrong',
+            );
           }
           state = state.copyWith(
             status: AuthStatus.unauthenticated,
@@ -81,23 +100,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     state = state.copyWith(status: AuthStatus.unauthenticated);
-  }
-
-  Future<void> isUserExist(String username) async {
-    try {
-      state = state.copyWith(status: AuthStatus.loading);
-      final response = await _repository.isUserExistRepo(username);
-      response.fold(
-        onSuccess: (_) {
-          state = state.copyWith(status: AuthStatus.userExist);
-        },
-        onFailure: (error) {
-          state = state.copyWith(status: AuthStatus.userNotExist, error: error);
-        },
-      );
-    } catch (e) {
-      state = state.copyWith(status: AuthStatus.unauthenticated);
-    }
+    secureStorage.deleteAll();
   }
 }
 

@@ -10,6 +10,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final bool canEdit;
+  final String? errors;
+  final bool obscureText;
 
   const CustomTextField({
     super.key,
@@ -18,7 +20,9 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.errors,
     this.canEdit = true,
+    this.obscureText = false,
   });
 
   bool get _isPhoneField => keyboardType == TextInputType.phone;
@@ -37,6 +41,7 @@ class CustomTextField extends StatelessWidget {
           ),
         ),
         TextFormField(
+          obscureText: obscureText,
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,
@@ -70,6 +75,7 @@ class CustomTextField extends StatelessWidget {
             disabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.grey),
             ),
+            errorText: errors,
             errorStyle: const TextStyle(
               color: Colors.red,
               fontSize: 13,

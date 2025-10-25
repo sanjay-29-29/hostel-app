@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hostel_app/app/core/constants/assets_constants.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
@@ -9,7 +8,7 @@ import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/members/member_filterbar.dart';
 import 'package:hostel_app/features/shared/widgets/members/member_result.dart';
 import 'package:hostel_app/features/shared/widgets/members/member_searchbar.dart';
-import 'package:hostel_app/features/user/notifier/user_notifier.dart';
+import 'package:hostel_app/features/user/notifier/manage_user_notifier.dart';
 
 class ManageMemberScreen extends ConsumerStatefulWidget {
   const ManageMemberScreen({super.key});
@@ -24,7 +23,9 @@ class _ManageMemberScreenState extends ConsumerState<ManageMemberScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(manageUserNotifierProvider.notifier).fetchUsers();
+    Future.microtask(() {
+      ref.read(manageUserNotifierProvider.notifier).fetchUsers();
+    });
   }
 
   @override
@@ -45,19 +46,17 @@ class _ManageMemberScreenState extends ConsumerState<ManageMemberScreen> {
           HeaderSection(title1: 'MANAGE', title2: 'USERS'),
           MemberSearchBar(
             controller: _searchController,
-            onChanged: (value) {
-              manageUserNotifier.searchUsers(value);
-            },
-            onClear: () => manageUserNotifier.clearSearch(),
+            onChanged: manageUserNotifier.searchUsers,
+            onClear: manageUserNotifier.clearSearch,
             memberCount: manageUserState.filteredUsers.length,
           ),
           MemberFilterBar(
             leftDropdown: SelectedStatus.values,
-            leftSelectedValue: SelectedStatus.Inactive,
-            leftChanged: (SelectedStatus? s) {},
+            leftSelectedValue: manageUserState.selectedStatus,
+            leftChanged: manageUserNotifier.filterByStatus,
             rightDropdownValue: SortOrder.values,
-            rightSelectedValue: SortOrder.Ascending,
-            rightChanged: (SortOrder? s) {},
+            rightSelectedValue: manageUserState.sortOrder,
+            rightChanged: manageUserNotifier.sort,
           ),
           Expanded(child: MemberList(users: manageUserState.filteredUsers)),
         ],

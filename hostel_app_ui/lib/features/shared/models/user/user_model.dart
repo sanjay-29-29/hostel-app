@@ -10,6 +10,7 @@ class UserModel {
   String role;
   String dateJoined;
   bool isActive;
+  bool isNew;
 
   UserModel({
     required this.name,
@@ -18,6 +19,7 @@ class UserModel {
     required this.role,
     required this.phoneNumber,
     required this.isActive,
+    required this.isNew,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

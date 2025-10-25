@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 
-class CustomDropdownField extends StatelessWidget {
+class CustomDropdownField<T> extends StatelessWidget {
   final String label;
   final String hint;
-  final List<String> items;
-  final String? value;
-  final void Function(String?) onChanged;
-  final String? Function(String?)? validator;
+  final List<T> items;
+  final String Function(T) getLabel;
+  final T? value;
+  final void Function(T?) onChanged;
+  final String? Function(T?)? validator;
 
   const CustomDropdownField({
     super.key,
+    required this.getLabel,
     required this.label,
     required this.hint,
     required this.items,
@@ -33,7 +35,7 @@ class CustomDropdownField extends StatelessWidget {
             fontSize: 13,
           ),
         ),
-        DropdownButtonFormField<String>(
+        DropdownButtonFormField<T>(
           initialValue: value,
           icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
           decoration: InputDecoration(
@@ -54,7 +56,10 @@ class CustomDropdownField extends StatelessWidget {
               .map(
                 (e) => DropdownMenuItem(
                   value: e,
-                  child: Text(e, style: const TextStyle(color: Colors.black)),
+                  child: Text(
+                    getLabel(e),
+                    style: const TextStyle(color: Colors.black),
+                  ),
                 ),
               )
               .toList(),

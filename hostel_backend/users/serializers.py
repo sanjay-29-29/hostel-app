@@ -3,7 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from hostels.models import Hostel
-from users.models import HostelMembership
+from hostels.serializers import HostelDropdownSerializer
+from users.models import HostelMembership, Role
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -11,6 +12,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
     hostels = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Hostel.objects.all(), source="hostel"
     )
+    role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
 
     def create(self, validated_data):
         hostels = validated_data.pop("hostel")
@@ -18,8 +20,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
             email=validated_data["email"],
             password=validated_data["password"],
             phone_number=validated_data["phone_number"],
-            first_name=validated_data["first_name"],
-            last_name=validated_data["last_name"],
+            name=validated_data["name"],
+            role=validated_data["role"],
         )
         hostel_membership = [
             HostelMembership(user=user, hostel=hostel) for hostel in hostels
@@ -30,23 +32,19 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = [
-            "first_name",
-            "last_name",
+            "name",
             "phone_number",
             "password",
             "email",
+            "role",
             "hostels",
         ]
 
 
-class UserRetrieveSerializer(serializers.ModelSerializer):
+class RoleDropdownSerializer(serializers.ModelSerializer):
     class Meta:
-        model = get_user_model()
-        fields = [
-            "email",
-            "name",
-            "phone_number",
-        ]
+        model = Role
+        fields = ["id", "name"]
 
 
 class PartialUserUpdateSerializer(serializers.ModelSerializer):
@@ -101,6 +99,9 @@ class FullUserUpdateSerializer(PartialUserUpdateSerializer):
 
 
 class FetchAllUserSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+    hostel = HostelDropdownSerializer(many=True)
+
     class Meta:
         model = get_user_model()
         fields = [
@@ -110,4 +111,9 @@ class FetchAllUserSerializer(serializers.ModelSerializer):
             "role",
             "date_joined",
             "is_active",
+            "is_new",
+            "hostel",
         ]
+
+    def get_role(self, obj):
+        return obj.role.name

@@ -4,8 +4,9 @@ class Endpoints {
   static const String login = 'token/';
   static const String register = 'register/';
   static const String isUserExist = 'is_user_exist/';
-  
+
   //users
   static const String userBase = 'users/';
   static const String allUsers = userBase + 'all/';
+  static const String createInfo = userBase + 'create-info/';
 }

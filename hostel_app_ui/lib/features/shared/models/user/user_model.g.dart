@@ -13,6 +13,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   role: json['role'] as String,
   phoneNumber: json['phone_number'] as String,
   isActive: json['is_active'] as bool,
+  isNew: json['is_new'] as bool,
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'role': instance.role,
   'date_joined': instance.dateJoined,
   'is_active': instance.isActive,
+  'is_new': instance.isNew,
 };

@@ -1,0 +1,42 @@
+[
+  { "model": "users.role", "pk": 1, "fields": { "name": "Warden" } },
+  { "model": "users.role", "pk": 2, "fields": { "name": "Floor Warden" } },
+  { "model": "users.role", "pk": 3, "fields": { "name": "Caretaker" } },
+  { "model": "users.role", "pk": 4, "fields": { "name": "User" } },
+  {
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$8qmQLLD6m6IDnqdU7q424E$qLXB6ylt8dDs/z95LsB6eEM7rbCXkkjGACrHrFUYYxk=",
+      "last_login": null,
+      "email": "test@gmail.com",
+      "name": "",
+      "phone_number": "",
+      "role": 4,
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "date_joined": "2025-10-25T10:03:40.344Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.customuser",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$X324L6vcK5rtaVvgM93f6j$qc1SGQCtQsirpTzgVkq1iSAGYxCaXTpcIgMTgLKaJrY=",
+      "last_login": "2025-10-25T10:04:43Z",
+      "email": "test123@gmail.com",
+      "name": "Sanjay R",
+      "phone_number": "9487171248",
+      "role": 1,
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "date_joined": "2025-10-25T10:04:33Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

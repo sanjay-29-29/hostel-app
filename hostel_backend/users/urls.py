@@ -9,8 +9,9 @@ urlpatterns = [
         include(
             [
                 path("", users_views.CreateUserView.as_view()),
-                path("", users_views.RetrieveAndUpdateUserView.as_view()),
+                # path("", users_views.RetrieveAndUpdateUserView.as_view()),
                 path("all/", users_views.SearchAllUsersView.as_view()),
+                path("create-info/", users_views.CreateUserInfoGetView.as_view())
             ]
         ),
     ),

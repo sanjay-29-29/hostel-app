@@ -128,7 +128,7 @@ class HeaderSection extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 24,
                       color: Colors.black,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 1.2,
                     ),
                   ),
