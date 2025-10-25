@@ -6,5 +6,6 @@ class ColorConstants {
   static const Color bgDark = Color(0xFFCB6868);
   static const Color bgLight = Color(0xFFE6DFDF);
   static const Color profileColor = Color(0xFFE76C6C);
+  static const Color profileBlue = Color(0xFF72C8E4);
 }
 

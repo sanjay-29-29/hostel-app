@@ -22,41 +22,46 @@ class CustomDropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      initialValue: value,
-      icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
-      decoration: InputDecoration(
-        label: ResponsiveText(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ResponsiveText(
           label,
-          style:  TextStyle(
+          style: TextStyle(
             color: ColorConstants.darkRed,
             fontWeight: FontWeight.bold,
             fontSize: 13,
           ),
         ),
-        hintText: hint,
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 1),
-        ),
-        errorStyle: const TextStyle(
-          color: Colors.red,
-          fontSize: 13,
-          height: 1.2,
-        ),
-      ),
-      items: items
-          .map(
-            (e) => DropdownMenuItem(
-              value: e,
-              child: Text(e, style: const TextStyle(color: Colors.black)),
+        DropdownButtonFormField<String>(
+          initialValue: value,
+          icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+          decoration: InputDecoration(
+            hintText: hint,
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black),
             ),
-          )
-          .toList(),
-      onChanged: onChanged,
-      validator: validator,
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+            ),
+            errorStyle: const TextStyle(
+              color: Colors.red,
+              fontSize: 13,
+              height: 1.2,
+            ),
+          ),
+          items: items
+              .map(
+                (e) => DropdownMenuItem(
+                  value: e,
+                  child: Text(e, style: const TextStyle(color: Colors.black)),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
+          validator: validator,
+        ),
+      ],
     );
   }
 }

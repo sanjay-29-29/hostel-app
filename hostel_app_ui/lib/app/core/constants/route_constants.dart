@@ -6,6 +6,8 @@ class RouteConstants {
   static const String home = '/home';
   static const String manageMembers = '/manage-members';
   static const String addMember = '/add-member';
+  static const String editProfile = '/edit-profile';
+  static const String profile = '/profile';
 }
 
 class RouteConstantsNames {
@@ -16,4 +18,6 @@ class RouteConstantsNames {
   static const String home = 'home';
   static const String manageMembers = 'manage-members';
   static const String addMember = 'add-member';
+  static const String editProfile = 'edit-profile';
+  static const String profile = 'profile';
 }

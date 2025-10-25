@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/core/utils/toast_utils.dart';
+import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_text_field.dart';
@@ -30,6 +32,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
       ToastHelper.showSuccess('Member added successfully!');
+      router.goNamed(RouteConstantsNames.manageMembers);
     } else {
       ToastHelper.showError('Please fix all validation errors');
     }
@@ -42,19 +45,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: PrimaryButton(
-          text: 'ADD USER',
-          onPressed: _handleSubmit,
-        ),
+        child: PrimaryButton(text: 'ADD USER', onPressed: _handleSubmit),
       ),
 
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            const HeaderSection(title1: 'ADD', title2: 'NEW MEMBER'),
+            HeaderSection(title1: 'ADD', title2: 'NEW MEMBER'),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
               child: Form(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -86,7 +85,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       ],
                     ),
                     const ResponsiveSizedBox(height: 24),
-      
+
                     FormCard(
                       children: [
                         CustomTextField(
