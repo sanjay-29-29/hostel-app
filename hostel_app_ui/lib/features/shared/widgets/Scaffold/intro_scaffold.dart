@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
 
+
 class IntroScaffold extends StatefulWidget {
-  Widget body;
+  final Widget body;
 
   IntroScaffold({super.key, required this.body});
 

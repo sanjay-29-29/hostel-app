@@ -38,7 +38,10 @@ final router = GoRouter(
     GoRoute(
       path: RouteConstants.home,
       name: RouteConstantsNames.home,
-      builder: (context, state) => const HomeScreen(),
+      builder: (context, state) {
+        final data = state.extra as ManageMember;
+        return HomeScreen(member: data);
+      },
     ),
     GoRoute(
       path: RouteConstants.addMember,
