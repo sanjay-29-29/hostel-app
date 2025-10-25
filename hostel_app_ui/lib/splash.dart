@@ -17,17 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 800), () {
-      router.goNamed(
-        RouteConstantsNames.home,
-        extra: ManageMember(
-          name: 'Ramesh Kumar',
-          role: 'Care Taker',
-          hostel: 'Kaveri',
-          status: 'Active',
-          phoneNumber: '9876501234',
-          email: 'ramesh.kumar@example.com',
-        ),
-      );
+      router.goNamed(RouteConstantsNames.gettingStarted);
     });
   }
 

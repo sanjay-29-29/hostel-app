@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
+import 'package:hostel_app/app/core/constants/route_constants.dart';
+import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_container.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/member/member_model.dart';
@@ -31,7 +33,9 @@ class HomeHeader extends StatelessWidget {
             left: 20,
             child: IconButton(
               icon: Icon(Icons.login_outlined, color: Colors.black),
-              onPressed: () {},
+              onPressed: () {
+                router.goNamed(RouteConstantsNames.gettingStarted);
+              },
             ),
           ),
           Positioned(
