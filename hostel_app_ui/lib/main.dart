@@ -18,9 +18,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
-        progressIndicatorTheme: ProgressIndicatorThemeData(
-          color: Colors.white,
-        ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
         inputDecorationTheme: InputDecorationTheme(
           floatingLabelBehavior: FloatingLabelBehavior.always,
           enabledBorder: UnderlineInputBorder(
@@ -48,6 +46,7 @@ class MyApp extends ConsumerWidget {
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,
+      
     );
   }
 }

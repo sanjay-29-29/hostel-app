@@ -13,16 +13,15 @@ import 'package:hostel_app/features/shared/widgets/primary_button.dart';
 import 'package:hostel_app/features/user/model/create_user_model.dart';
 import 'package:hostel_app/features/user/notifier/add_user_notifier.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class AddMemberScreen extends ConsumerStatefulWidget {
-  const AddMemberScreen({super.key});
+class AddUserScreen extends ConsumerStatefulWidget {
+  const AddUserScreen({super.key});
 
   @override
-  ConsumerState<AddMemberScreen> createState() => _AddMemberScreenState();
+  ConsumerState<AddUserScreen> createState() => _AddMemberScreenState();
 }
 
-class _AddMemberScreenState extends ConsumerState<AddMemberScreen> {
+class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _userNameController = TextEditingController();

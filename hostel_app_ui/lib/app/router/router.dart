@@ -7,6 +7,7 @@ import 'package:hostel_app/features/user/presentation/manage_user_screen.dart';
 import 'package:hostel_app/features/auth/presentation/getting_started_screen.dart';
 import 'package:hostel_app/features/auth/presentation/login_screen.dart';
 import 'package:hostel_app/features/auth/presentation/signup_screen.dart';
+import 'package:hostel_app/features/waste/presentation/waste_manage_screen.dart';
 import 'package:hostel_app/splash.dart';
 
 final router = GoRouter(
@@ -40,12 +41,17 @@ final router = GoRouter(
     GoRoute(
       path: RouteConstants.addMember,
       name: RouteConstantsNames.addMember,
-      builder: (context, state) => const AddMemberScreen(),
+      builder: (context, state) => const AddUserScreen(),
     ),
     GoRoute(
       path: RouteConstants.manageMembers,
       name: RouteConstantsNames.manageMembers,
-      builder: (context, state) => const ManageMemberScreen(),
+      builder: (context, state) => const ManageUserScreen(),
+    ),
+    GoRoute(
+      path: RouteConstants.wasteManage,
+      name: RouteConstantsNames.wasteManage,
+      builder: (context, state) => const WasteManageScreen(),
     ),
     // GoRoute(
     //   path: RouteConstants.profile,
@@ -59,7 +65,7 @@ final router = GoRouter(
     //   path: RouteConstants.editProfile,
     //   name: RouteConstantsNames.editProfile,
     //   builder: (context, state) {EditProfileScreen(member: member);
-    
+
     // ),
   ],
   errorBuilder: (context, state) =>

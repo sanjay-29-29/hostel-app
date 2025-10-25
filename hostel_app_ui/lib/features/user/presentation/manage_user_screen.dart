@@ -3,21 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
-import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
-import 'package:hostel_app/features/shared/widgets/members/member_filterbar.dart';
-import 'package:hostel_app/features/shared/widgets/members/member_result.dart';
-import 'package:hostel_app/features/shared/widgets/members/member_searchbar.dart';
+import 'package:hostel_app/features/shared/widgets/users/users_filterbar.dart';
+import 'package:hostel_app/features/shared/widgets/users/users_result.dart';
+import 'package:hostel_app/features/shared/widgets/users/users_searchbar.dart';
 import 'package:hostel_app/features/user/notifier/manage_user_notifier.dart';
 
-class ManageMemberScreen extends ConsumerStatefulWidget {
-  const ManageMemberScreen({super.key});
+class ManageUserScreen extends ConsumerStatefulWidget {
+  const ManageUserScreen({super.key});
 
   @override
-  ConsumerState<ManageMemberScreen> createState() => _ManageMemberScreenState();
+  ConsumerState<ManageUserScreen> createState() => _ManageMemberScreenState();
 }
 
-class _ManageMemberScreenState extends ConsumerState<ManageMemberScreen> {
+class _ManageMemberScreenState extends ConsumerState<ManageUserScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
