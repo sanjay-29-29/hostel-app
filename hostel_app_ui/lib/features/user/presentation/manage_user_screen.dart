@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/users/users_filterbar.dart';

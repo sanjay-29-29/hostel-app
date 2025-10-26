@@ -21,10 +21,10 @@ class DateSelector extends StatelessWidget {
     );
 
     return SizedBox(
-      height: 80,
+      height: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 25),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         itemCount: days.length,
         itemBuilder: (_, index) {
           final date = days[index];

@@ -171,7 +171,3 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
   }
 }
 
-final manageUserNotifierProvider =
-    StateNotifierProvider<ManageUserNotifier, ManageUserState>((ref) {
-  return ManageUserNotifier(ref.watch(userRepositoryProvider));
-});

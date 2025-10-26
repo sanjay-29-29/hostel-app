@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/utils/toast_utils.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/models/role/role_model.dart';
@@ -40,8 +41,10 @@ class AddUserNotifier extends Notifier<AddUserState> {
     final response = await repository.fetchUserCreateInfo();
     response.fold(
       onSuccess: (response) {
-        state =
-            state.copyWith(roles: response.roles, hostels: response.hostels);
+        state = state.copyWith(
+          roles: response.roles,
+          hostels: response.hostels,
+        );
       },
       onFailure: (e) {},
     );
@@ -60,6 +63,3 @@ class AddUserNotifier extends Notifier<AddUserState> {
     );
   }
 }
-
-final addUserNotifierProvider =
-    NotifierProvider<AddUserNotifier, AddUserState>(AddUserNotifier.new);

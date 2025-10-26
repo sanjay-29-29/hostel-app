@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/core/storage/secure_storage.dart';
 import 'package:hostel_app/app/core/utils/toast_utils.dart';
-import 'package:hostel_app/app/provider/dio_provider.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/features/auth/repository/auth_repository.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
@@ -18,6 +16,7 @@ enum AuthStatus {
   userNotExist,
   userExist,
 }
+
 
 class AuthState {
   final AuthStatus status;
@@ -108,11 +107,3 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 }
 
-final authRepositoryProvider = Provider(
-  (ref) => AuthRepositoryImpl(ref.watch(dioClientProvider)),
-);
-final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
-  ref,
-) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
-});

@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
 import 'package:hostel_app/app/core/result/result.dart';
-import 'package:hostel_app/app/provider/dio_provider.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 import 'package:hostel_app/features/user/model/create_user_model.dart';
@@ -52,6 +50,3 @@ class UserRepositoryImpl implements UserRepository {
   }
 }
 
-final userRepositoryProvider = Provider(
-  (ref) => UserRepositoryImpl(ref.watch(dioClientProvider)),
-);

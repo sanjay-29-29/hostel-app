@@ -23,7 +23,9 @@ class HomeBody extends StatelessWidget {
             imagePath: IconAssetConstants.foodIcon,
             title1: 'FOOD',
             title2: 'MANAGEMENT',
-            onTap: () {},
+            onTap: () {
+              router.pushNamed(RouteConstantsNames.wasteManage);
+            },
           ),
           _buildMenuCard(
             context,

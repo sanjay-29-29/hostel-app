@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
@@ -11,7 +12,6 @@ import 'package:hostel_app/features/shared/widgets/forms/form_card.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/primary_button.dart';
 import 'package:hostel_app/features/user/model/create_user_model.dart';
-import 'package:hostel_app/features/user/notifier/add_user_notifier.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 
 class AddUserScreen extends ConsumerStatefulWidget {

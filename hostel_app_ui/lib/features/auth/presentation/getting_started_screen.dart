@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
-import 'package:hostel_app/app/core/constants/route_constants.dart';
-import 'package:hostel_app/app/router/router.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
-import 'package:hostel_app/features/auth/notifier/auth_notifier.dart';
 import 'package:hostel_app/features/shared/widgets/Scaffold/intro_scaffold.dart';
 
 class GettingStarted extends ConsumerWidget {

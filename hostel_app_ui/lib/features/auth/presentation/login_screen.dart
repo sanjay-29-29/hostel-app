@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/auth/notifier/auth_notifier.dart';
@@ -41,7 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     return IntroScaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
