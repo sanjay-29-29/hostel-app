@@ -94,6 +94,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
         },
       );
     } catch (e) {
+      ToastHelper.showError(
+        'Something went wrong',
+      );
+      print(e);
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }
   }

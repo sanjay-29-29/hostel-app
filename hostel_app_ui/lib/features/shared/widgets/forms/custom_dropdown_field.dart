@@ -8,7 +8,7 @@ class CustomDropdownField<T> extends StatelessWidget {
   final List<T> items;
   final String Function(T) getLabel;
   final T? value;
-  final void Function(T?) onChanged;
+  final void Function(T?)? onChanged;
   final String? Function(T?)? validator;
 
   const CustomDropdownField({
@@ -18,7 +18,7 @@ class CustomDropdownField<T> extends StatelessWidget {
     required this.hint,
     required this.items,
     required this.value,
-    required this.onChanged,
+    this.onChanged = null,
     this.validator,
   });
 
@@ -36,8 +36,12 @@ class CustomDropdownField<T> extends StatelessWidget {
           ),
         ),
         DropdownButtonFormField<T>(
+          dropdownColor: Colors.white,
           initialValue: value,
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+          icon: const Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.arrow_drop_down, color: Colors.black),
+          ),
           decoration: InputDecoration(
             hintText: hint,
             enabledBorder: const UnderlineInputBorder(

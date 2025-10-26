@@ -21,7 +21,7 @@ class AddUserState {
     return AddUserState(
       roles: roles ?? this.roles,
       hostels: hostels ?? this.hostels,
-      error: error ?? this.error,
+      error: error,
     );
   }
 
@@ -47,18 +47,17 @@ class AddUserNotifier extends Notifier<AddUserState> {
     );
   }
 
-  Future<bool> createUser(CreateUserModel model) async {
+  Future<void> createUser(CreateUserModel model) async {
     final response = await repository.createUser(model);
     response.fold(
       onSuccess: (response) {
         ToastHelper.showSuccess('User created succesfully');
-        return true;
+        state = state.copyWith(error: null);
       },
       onFailure: (e) {
         state = state.copyWith(error: e);
       },
     );
-    return false;
   }
 }
 

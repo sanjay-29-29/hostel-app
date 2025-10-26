@@ -8,6 +8,7 @@ import 'package:hostel_app/features/auth/presentation/getting_started_screen.dar
 import 'package:hostel_app/features/auth/presentation/login_screen.dart';
 import 'package:hostel_app/features/auth/presentation/signup_screen.dart';
 import 'package:hostel_app/features/waste/presentation/waste_manage_screen.dart';
+import 'package:hostel_app/features/user/presentation/profile_screen.dart';
 import 'package:hostel_app/splash.dart';
 
 final router = GoRouter(
@@ -53,19 +54,18 @@ final router = GoRouter(
       name: RouteConstantsNames.wasteManage,
       builder: (context, state) => const WasteManageScreen(),
     ),
-    // GoRoute(
-    //   path: RouteConstants.profile,
-    //   name: RouteConstantsNames.profile,
-    //   builder: (context, state) {
-    //     final data = state.extra as Map<String, dynamic>;
-    //     return ProfileScreen(member: data['member'], canEdit: data['canEdit']);
-    //   },
-    // ),
+    GoRoute(
+      path: RouteConstants.profile,
+      name: RouteConstantsNames.profile,
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return ProfileScreen(user: data['user'], canEdit: data['canEdit']);
+      },
+    ),
     // GoRoute(
     //   path: RouteConstants.editProfile,
     //   name: RouteConstantsNames.editProfile,
     //   builder: (context, state) {EditProfileScreen(member: member);
-
     // ),
   ],
   errorBuilder: (context, state) =>

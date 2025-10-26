@@ -54,7 +54,7 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
 
   void _handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    bool status = await ref.read(addUserNotifierProvider.notifier).createUser(
+    await ref.read(addUserNotifierProvider.notifier).createUser(
           CreateUserModel(
             phoneNumber: _phoneController.text,
             email: _emailController.text,
@@ -64,10 +64,6 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
             hostels: _selectedHostels.map((ele) => ele.id).toList(),
           ),
         );
-    if (status) {
-      print(status);
-      _formKey.currentState!.reset();
-    }
   }
 
   @override
@@ -106,13 +102,21 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
                               ),
                             ),
                             MultiDropdown<HostelModel>(
+                              enabled: addUserState.hostels.length > 0,
                               validator: (value) {
-                                if (value == null)
+                                if (value == null || value.length == 0)
                                   return 'This field is required.';
                                 return null;
                               },
-                              dropdownDecoration:
-                                  DropdownDecoration(marginTop: 0),
+                              dropdownDecoration: DropdownDecoration(
+                                marginTop: 2,
+                              ),
+                              chipDecoration: const ChipDecoration(
+                                backgroundColor: ColorConstants.bgLight,
+                                wrap: true,
+                                runSpacing: 2,
+                                spacing: 10,
+                              ),
                               fieldDecoration: FieldDecoration(
                                 padding: EdgeInsets.all(0),
                                 hintText: 'Select Hostel',
@@ -143,11 +147,13 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
                           items: addUserState.roles,
                           value: _selectedRole,
                           getLabel: (RoleModel? role) => role?.name ?? '',
-                          onChanged: (RoleModel? role) {
-                            setState(() {
-                              _selectedRole = role;
-                            });
-                          },
+                          onChanged: addUserState.roles.length > 0
+                              ? (RoleModel? role) {
+                                  setState(() {
+                                    _selectedRole = role;
+                                  });
+                                }
+                              : null,
                           validator: (value) {
                             if (value == null) {
                               return 'This field is required';
@@ -162,27 +168,27 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
                       children: [
                         CustomTextField(
                           label: 'USER NAME',
-                          hint: 'sathiyaseelan',
+                          hint: 'Enter Username',
                           controller: _userNameController,
                           errors: formErrors?.errors['name']?[0],
                         ),
                         CustomTextField(
                           label: 'EMAIL ADDRESS',
-                          hint: 'abc@gmail.com',
+                          hint: 'Enter email address',
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           errors: formErrors?.errors['email']?[0],
                         ),
                         CustomTextField(
                           label: 'PHONE NUMBER',
-                          hint: '9876543210',
+                          hint: 'Enter phone number',
                           controller: _phoneController,
                           keyboardType: TextInputType.phone,
                           errors: formErrors?.errors['phone_number']?[0],
                         ),
                         CustomTextField(
                           label: 'PASSWORD',
-                          hint: '',
+                          hint: 'Enter password',
                           controller: _passwordController,
                           errors: formErrors?.errors['password']?[0],
                           obscureText: true,

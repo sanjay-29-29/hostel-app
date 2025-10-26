@@ -32,15 +32,14 @@ class MemberList extends StatelessWidget {
       itemBuilder: (context, index) {
         final user = users[index];
         final name = user.name;
-        final firstLetter = name.isNotEmpty
-            ? name.trim()[0].toUpperCase()
-            : '?';
+        final firstLetter =
+            name.isNotEmpty ? name.trim()[0].toUpperCase() : '?';
 
         return InkWell(
           onTap: () {
             router.pushNamed(
               RouteConstantsNames.profile,
-              extra: {'member': user, 'canEdit': true},
+              extra: {'user': user, 'canEdit': user.role == 'Warden'},
             );
           },
           child: ListTile(
@@ -68,9 +67,8 @@ class MemberList extends StatelessWidget {
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: user.isActive
-                    ? Colors.green.shade100
-                    : Colors.red.shade100,
+                color:
+                    user.isActive ? Colors.green.shade100 : Colors.red.shade100,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
