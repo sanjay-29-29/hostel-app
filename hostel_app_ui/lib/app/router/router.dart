@@ -7,6 +7,7 @@ import 'package:hostel_app/features/user/presentation/manage_user_screen.dart';
 import 'package:hostel_app/features/auth/presentation/getting_started_screen.dart';
 import 'package:hostel_app/features/auth/presentation/login_screen.dart';
 import 'package:hostel_app/features/auth/presentation/signup_screen.dart';
+import 'package:hostel_app/features/waste/presentation/report_screen.dart';
 import 'package:hostel_app/features/waste/presentation/waste_manage_screen.dart';
 import 'package:hostel_app/features/user/presentation/profile_screen.dart';
 import 'package:hostel_app/splash.dart';
@@ -53,6 +54,11 @@ final router = GoRouter(
       path: RouteConstants.wasteManage,
       name: RouteConstantsNames.wasteManage,
       builder: (context, state) => const WasteManageScreen(),
+    ),
+    GoRoute(
+      path: RouteConstants.reportView,
+      name: RouteConstantsNames.reportView,
+      builder: (context, state) => const ReportViewScreen(),
     ),
     GoRoute(
       path: RouteConstants.profile,

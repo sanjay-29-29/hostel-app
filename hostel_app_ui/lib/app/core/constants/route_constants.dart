@@ -9,6 +9,7 @@ class RouteConstants {
   static const String editProfile = '/edit-profile';
   static const String profile = '/profile';
   static const String wasteManage = '/waste-manage';
+  static const String reportView = '/report-view';
 }
 
 class RouteConstantsNames {
@@ -22,4 +23,5 @@ class RouteConstantsNames {
   static const String editProfile = 'edit-profile';
   static const String profile = 'profile';
   static const String wasteManage = 'waste-manage';
+  static const String reportView = 'report-view';
 }
