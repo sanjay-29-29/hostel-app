@@ -59,11 +59,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ],
     )
     role = models.ForeignKey(to=Role, on_delete=models.CASCADE)
-    hostel = models.ManyToManyField(
-        to=Hostel,
-        through="HostelMembership",
-        related_name="assigned_users",
-    )
+    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
     is_new = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -76,12 +72,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-
-class HostelMembership(models.Model):
-    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
-    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
-    assigned_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.hostel.name} {self.user.email}"

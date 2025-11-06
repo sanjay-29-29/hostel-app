@@ -1,6 +1,11 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 import users.views as users_views
+
+router = DefaultRouter()
+
+router.register(r"users", users_views.CreateUpdateUserView, basename="user")
 
 urlpatterns = [
     path("token/", users_views.UserLoginView.as_view()),
@@ -8,21 +13,11 @@ urlpatterns = [
         "users/",
         include(
             [
-                path("", users_views.CreateUpdateUserView.as_view({"post": "create"})),
-                path(
-                    "<int:pk>/",
-                    users_views.CreateUpdateUserView.as_view(
-                        {
-                            "get": "retrieve",
-                            "put": "update",
-                            "patch": "partial_update",
-                            "delete": "destroy",
-                        }
-                    ),
-                ),
                 path("all/", users_views.SearchAllUsersView.as_view()),
                 path("create-info/", users_views.CreateUserInfoGetView.as_view()),
             ]
         ),
     ),
 ]
+
+urlpatterns += router.urls

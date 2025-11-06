@@ -13,6 +13,8 @@ from users.filters import UserFilter
 from users.models import Role
 from users.permissions import IsWarden
 import users.serializers as users_serializer
+from wastes.models import Timing
+from wastes.serializers import TimingSerializer
 
 
 class UserLoginView(ObtainAuthToken):
@@ -66,8 +68,16 @@ class CreateUserInfoGetView(APIView):
     def get(self, request, *args, **kargs):
         hostels = Hostel.objects.all()
         roles = Role.objects.all()
+        timings = Timing.objects.all()
 
         hostel_data = HostelDropdownSerializer(hostels, many=True).data
         role_data = users_serializer.RoleDropdownSerializer(roles, many=True).data
+        timing_data = TimingSerializer(timings, many=True).data
 
-        return Response({"roles": role_data, "hostels": hostel_data})
+        return Response(
+            {
+                "roles": role_data,
+                "hostels": hostel_data,
+                "timings": timing_data,
+            }
+        )

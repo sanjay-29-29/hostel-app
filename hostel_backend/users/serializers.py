@@ -4,29 +4,16 @@ from rest_framework import serializers
 
 from hostels.models import Hostel
 from hostels.serializers import HostelDropdownSerializer
-from users.models import HostelMembership, Role
+from users.models import Role
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    hostels = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Hostel.objects.all(), source="hostel"
-    )
+    hostel = serializers.PrimaryKeyRelatedField(queryset=Hostel.objects.all())
     role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
 
     def create(self, validated_data):
-        hostels = validated_data.pop("hostel")
-        user = get_user_model().objects.create_user(
-            email=validated_data["email"],
-            password=validated_data["password"],
-            phone_number=validated_data["phone_number"],
-            name=validated_data["name"],
-            role=validated_data["role"],
-        )
-        hostel_membership = [
-            HostelMembership(user=user, hostel=hostel) for hostel in hostels
-        ]
-        HostelMembership.objects.bulk_create(hostel_membership)
+        user = get_user_model().objects.create_user(**validated_data)
         return user
 
     class Meta:
@@ -37,7 +24,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "password",
             "email",
             "role",
-            "hostels",
+            "hostel",
         ]
 
 
@@ -88,8 +75,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class FetchAllUserSerializer(serializers.ModelSerializer):
-    role = serializers.SerializerMethodField()
-    hostel = HostelDropdownSerializer(many=True)
+    hostel = serializers.CharField(source="hostel.name")
+    role = serializers.CharField(source="role.name")
 
     class Meta:
         model = get_user_model()

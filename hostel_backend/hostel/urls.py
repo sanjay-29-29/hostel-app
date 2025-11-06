@@ -22,6 +22,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "api/",
-        include("users.urls"),
+        include(
+            [
+                path("wastes/", include("wastes.urls")),
+                path("", include("users.urls")),
+            ]
+        ),
     ),
 ]
