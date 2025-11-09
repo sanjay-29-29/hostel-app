@@ -13,11 +13,10 @@ import 'package:hostel_app/features/waste/repository/waste_manage_repository.dar
 final authRepositoryProvider = Provider(
   (ref) => AuthRepositoryImpl(ref.watch(dioClientProvider)),
 );
-final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
-  ref,
-) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
-});
+
+final authNotifierProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);
 
 // User Providers
 final addUserNotifierProvider = NotifierProvider<AddUserNotifier, AddUserState>(
@@ -33,7 +32,6 @@ final manageUserNotifierProvider =
       return ManageUserNotifier(ref.watch(userRepositoryProvider));
     });
 
-
 // Waste Management Providers
 
 final wasteManagementRepositoryProvider = Provider(
@@ -41,6 +39,6 @@ final wasteManagementRepositoryProvider = Provider(
 );
 
 final wasteManageNotifierProvider =
-    StateNotifierProvider<WasteManageNotifier, WasteManageState>((ref) {
-      return WasteManageNotifier(ref.watch(wasteManagementRepositoryProvider));
-    });
+    NotifierProvider<WasteManageNotifier, WasteManageState>(
+      WasteManageNotifier.new,
+    );

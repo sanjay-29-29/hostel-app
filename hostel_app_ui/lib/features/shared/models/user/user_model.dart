@@ -1,4 +1,3 @@
-import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
@@ -10,7 +9,7 @@ class UserModel {
   String name;
   String phoneNumber;
   String role;
-  List<HostelModel> hostel;
+  String hostel;
   String dateJoined;
   bool isActive;
   bool isNew;

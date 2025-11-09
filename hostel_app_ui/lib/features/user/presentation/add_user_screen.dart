@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
-import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/models/role/role_model.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
@@ -12,7 +11,6 @@ import 'package:hostel_app/features/shared/widgets/forms/form_card.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/primary_button.dart';
 import 'package:hostel_app/features/user/model/create_user_model.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
 
 class AddUserScreen extends ConsumerStatefulWidget {
   const AddUserScreen({super.key});
@@ -27,19 +25,10 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _hostelController = MultiSelectController<HostelModel>();
   final _passwordController = TextEditingController();
 
   RoleModel? _selectedRole;
-  List<HostelModel> _selectedHostels = [];
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref.read(addUserNotifierProvider.notifier).fetchCreateInfo();
-    });
-  }
+  HostelModel? _selectedHostel;
 
   @override
   void dispose() {
@@ -47,7 +36,6 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _passwordController.dispose();
-    _hostelController.dispose();
 
     super.dispose();
   }
@@ -61,7 +49,7 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
             name: _userNameController.text,
             password: _passwordController.text,
             role: _selectedRole!.id,
-            hostels: _selectedHostels.map((ele) => ele.id).toList(),
+            hostel: _selectedHostel!.id,
           ),
         );
   }
@@ -69,6 +57,8 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
   @override
   Widget build(BuildContext context) {
     final addUserState = ref.watch(addUserNotifierProvider);
+    final baseInfo = ref.watch(authNotifierProvider).baseInfo;
+
     final formErrors = addUserState.error;
 
     return Scaffold(
@@ -93,61 +83,35 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ResponsiveText(
-                              'HOSTEL',
-                              style: TextStyle(
-                                color: ColorConstants.darkRed,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                              ),
-                            ),
-                            MultiDropdown<HostelModel>(
-                              enabled: addUserState.hostels.length > 0,
+                            CustomDropdownField<HostelModel>(
+                              label: 'HOSTEL',
+                              hint: 'Select Hostel',
+                              items: baseInfo?.hostels ?? [],
+                              value: _selectedHostel,
+                              getLabel: (HostelModel hostel) => hostel.name,
+                              onChanged: baseInfo?.hostels != null
+                                  ? (HostelModel? hostel) {
+                                      setState(() {
+                                        _selectedHostel = hostel;
+                                      });
+                                    }
+                                  : null,
                               validator: (value) {
-                                if (value == null || value.length == 0)
-                                  return 'This field is required.';
+                                if (value == null) {
+                                  return 'This field is required';
+                                }
                                 return null;
                               },
-                              dropdownDecoration: DropdownDecoration(
-                                marginTop: 2,
-                              ),
-                              chipDecoration: const ChipDecoration(
-                                backgroundColor: ColorConstants.bgLight,
-                                wrap: true,
-                                runSpacing: 2,
-                                spacing: 10,
-                              ),
-                              fieldDecoration: FieldDecoration(
-                                padding: EdgeInsets.all(0),
-                                hintText: 'Select Hostel',
-                                border: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black),
-                                ),
-                              ),
-                              onSelectionChange: (items) {
-                                setState(() {
-                                  _selectedHostels = items;
-                                });
-                              },
-                              items: addUserState.hostels
-                                  .map(
-                                    (hostel) => DropdownItem(
-                                      label: hostel.name,
-                                      value: hostel,
-                                    ),
-                                  )
-                                  .toList(),
-                              key: ValueKey(addUserState.hostels.length),
                             ),
                           ],
                         ),
                         CustomDropdownField<RoleModel>(
                           label: 'ROLE',
                           hint: 'Select Role',
-                          items: addUserState.roles,
+                          items: baseInfo?.roles ?? [],
                           value: _selectedRole,
-                          getLabel: (RoleModel? role) => role?.name ?? '',
-                          onChanged: addUserState.roles.length > 0
+                          getLabel: (RoleModel role) => role.name,
+                          onChanged: baseInfo?.roles != null
                               ? (RoleModel? role) {
                                   setState(() {
                                     _selectedRole = role;

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
 import 'package:hostel_app/app/core/result/result.dart';
 import 'package:hostel_app/features/auth/model/signup_model.dart';
+import 'package:hostel_app/features/shared/models/base_info/base_info_model.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
@@ -11,8 +12,7 @@ abstract class AuthRepository {
     String password,
   );
   Future<Result<int, BackendError>> signup(SignupModel signupModel);
-
-  Future<Result<void, BackendError>> isUserExistRepo(String username);
+  Future<Result<BaseInfoModel, BackendError>> fetchBaseInfo();
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -30,10 +30,12 @@ class AuthRepositoryImpl extends AuthRepository {
         Endpoints.login,
         data: {'username': username, 'password': password},
       );
-      return Success((
-        UserModel.fromJson(response.data),
-        response.data['token'],
-      ));
+      return Success(
+        (
+          UserModel.fromJson(response.data),
+          response.data['token'],
+        ),
+      );
     } on DioException catch (e) {
       final data = e.response?.data;
       return Failure(BackendError.fromJson(data));
@@ -54,13 +56,11 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<Result<void, BackendError>> isUserExistRepo(String username) async {
+  Future<Result<BaseInfoModel, BackendError>> fetchBaseInfo() async {
     try {
-      final response = await _dioClient.post(
-        Endpoints.isUserExist,
-        data: {'username': username},
-      );
-      return Success(response.statusCode!);
+      final response = await _dioClient.get(Endpoints.createInfo);
+      print(response.statusCode);
+      return Success(BaseInfoModel.fromJson(response.data));
     } on DioException catch (e) {
       return Failure(BackendError.fromJson(e.response?.data));
     }

@@ -54,45 +54,45 @@ class ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   FormCard(
                     children: [
-                      MultiDropdown<HostelModel>(
-                        enabled: false,
-                        controller: _hostelController,
-                        validator: (value) {
-                          if (value == null || value.length == 0)
-                            return 'This field is required.';
-                          return null;
-                        },
-                        dropdownDecoration: DropdownDecoration(
-                          marginTop: 2,
-                        ),
-                        chipDecoration: const ChipDecoration(
-                          backgroundColor: ColorConstants.bgLight,
-                          wrap: true,
-                          runSpacing: 2,
-                          spacing: 10,
-                        ),
-                        fieldDecoration: FieldDecoration(
-                          padding: EdgeInsets.all(0),
-                          hintText: 'Select Hostel',
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        // onSelectionChange: (items) {
-                        //   setState(() {
-                        //     _selectedHostels = items;
-                        //   });
-                        // },
-                        items: widget.user.hostel
-                            .map(
-                              (hostel) => DropdownItem(
-                                label: hostel.name,
-                                value: hostel,
-                              ),
-                            )
-                            .toList(),
-                        key: ValueKey(widget.user.hostel.length),
-                      ),
+                      // MultiDropdown<HostelModel>(
+                      //   enabled: false,
+                      //   controller: _hostelController,
+                      //   validator: (value) {
+                      //     if (value == null || value.length == 0)
+                      //       return 'This field is required.';
+                      //     return null;
+                      //   },
+                      //   dropdownDecoration: DropdownDecoration(
+                      //     marginTop: 2,
+                      //   ),
+                      //   chipDecoration: const ChipDecoration(
+                      //     backgroundColor: ColorConstants.bgLight,
+                      //     wrap: true,
+                      //     runSpacing: 2,
+                      //     spacing: 10,
+                      //   ),
+                      //   fieldDecoration: FieldDecoration(
+                      //     padding: EdgeInsets.all(0),
+                      //     hintText: 'Select Hostel',
+                      //     border: UnderlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.black),
+                      //     ),
+                      //   ),
+                      //   // onSelectionChange: (items) {
+                      //   //   setState(() {
+                      //   //     _selectedHostels = items;
+                      //   //   });
+                      //   // },
+                      //   items: widget.user.hostel
+                      //       .map(
+                      //         (hostel) => DropdownItem(
+                      //           label: hostel.name,
+                      //           value: hostel,
+                      //         ),
+                      //       )
+                      //       .toList(),
+                      //   key: ValueKey(widget.user.hostel.length),
+                      // ),
                       CustomTextField(
                         label: 'ROLE',
                         hint: '',

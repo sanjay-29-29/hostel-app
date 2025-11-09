@@ -8,7 +8,9 @@ from .serializers import WasteSerializer
 
 class WasteViewSet(ModelViewSet):
     serializer_class = WasteSerializer
-    queryset = Waste.objects.all()
+    queryset = Waste.objects.all().select_related(
+        "created_by", "updated_by", "timing", "hostel"
+    )
     filter_backends = [DjangoFilterBackend]
     filterset_class = WasteFilter
 
@@ -22,7 +24,3 @@ class WasteViewSet(ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)
-
-    def get_permissions(self):
-        print(f"Action: {self.action}")
-        return super().get_permissions()

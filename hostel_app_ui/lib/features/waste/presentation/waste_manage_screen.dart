@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
+import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/primary_button.dart';
@@ -20,7 +22,7 @@ class WasteManageScreen extends ConsumerStatefulWidget {
 
 class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
   DateTime selectedDate = DateTime.now();
-  MealTypesEnum selectedMeal = MealTypesEnum.Breakfast;
+  TimingModel? _timing;
 
   final coffeeWasteController = TextEditingController();
   final studentWasteController = TextEditingController();
@@ -40,6 +42,8 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final baseInfo = ref.read(authNotifierProvider).baseInfo;
+
     return Scaffold(
       backgroundColor: ColorConstants.bgLight,
       body: SingleChildScrollView(
@@ -64,32 +68,27 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                     selectedDate: selectedDate,
                     onSelect: (d) => setState(() => selectedDate = d),
                   ),
-                  CustomDropdownField<MealTypesEnum>(
+                  CustomDropdownField<TimingModel>(
                     label: 'Select Meal Time',
                     hint: 'Choose a meal time',
-                    items: MealTypesEnum.values,
-                    value: selectedMeal,
-                    getLabel: (meal) => meal.value,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedMeal = val!;
-                        _clearFields();
-                      });
-                    },
+                    items: baseInfo?.timings ?? [],
+                    value: _timing,
+                    getLabel: (meal) => meal.name,
+                    onChanged: baseInfo?.timings != null
+                        ? (val) {
+                            setState(() {
+                              _timing = val!;
+                              _clearFields();
+                            });
+                          }
+                        : null,
                   ),
-
-                  // StudentCountSection(
-                  // hostelTotals: {
-                  // 'Ilango': 120,
-                  // },
-                  // ),
                   StudentCountSection(
                     hostelTotals: {'Ilango': 120, 'Kamban': 90},
                   ),
-
                   WasteSection(
                     coffeeWasteController: coffeeWasteController,
-                    selectedMeal: selectedMeal,
+                    selectedTiming: _timing,
                     studentWasteController: studentWasteController,
                     cookedWasteController: cookedWasteController,
                     milkWasteController: milkWasteController,

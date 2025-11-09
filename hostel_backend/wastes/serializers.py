@@ -8,6 +8,10 @@ class WasteSerializer(serializers.ModelSerializer):
     updated_by = serializers.CharField(source="updated_by.name", read_only=True)
     created_by = serializers.CharField(source="created_by.name", read_only=True)
 
+    hostel_name = serializers.CharField(source="hostel.name", read_only=True)
+
+    timing_name = serializers.CharField(source="timing.name", read_only=True)
+
     class Meta:
         model = Waste
         fields = [
@@ -16,6 +20,8 @@ class WasteSerializer(serializers.ModelSerializer):
             "food_cooked_waste",
             "student_waste",
             "date",
+            "timing_name",
+            "hostel_name",
             "hostel",
             "timing",
             "students_present",
@@ -24,8 +30,13 @@ class WasteSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = [
             "id",
-            "hostel",
+            "hostel_name",
+            "timing_name",
         ]
+        extra_kwargs = {
+            "hostel": {"write_only": True},
+            "timing": {"write_only": True},
+        }
 
 
 class WasteGetSerializer(serializers.Serializer):

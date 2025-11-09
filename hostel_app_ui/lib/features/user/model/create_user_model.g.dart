@@ -13,9 +13,7 @@ CreateUserModel _$CreateUserModelFromJson(Map<String, dynamic> json) =>
       phoneNumber: json['phone_number'] as String,
       password: json['password'] as String,
       role: (json['role'] as num).toInt(),
-      hostels: (json['hostels'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+      hostel: (json['hostel'] as num).toInt(),
     );
 
 Map<String, dynamic> _$CreateUserModelToJson(CreateUserModel instance) =>
@@ -25,5 +23,5 @@ Map<String, dynamic> _$CreateUserModelToJson(CreateUserModel instance) =>
       'phone_number': instance.phoneNumber,
       'password': instance.password,
       'role': instance.role,
-      'hostels': instance.hostels,
+      'hostel': instance.hostel,
     };

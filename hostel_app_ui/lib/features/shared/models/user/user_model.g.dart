@@ -12,9 +12,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   email: json['email'] as String,
   dateJoined: json['date_joined'] as String,
   role: json['role'] as String,
-  hostel: (json['hostel'] as List<dynamic>)
-      .map((e) => HostelModel.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  hostel: json['hostel'] as String,
   phoneNumber: json['phone_number'] as String,
   isActive: json['is_active'] as bool,
   isNew: json['is_new'] as bool,
