@@ -18,6 +18,10 @@ class WasteViewSet(ModelViewSet):
         request.data["hostel"] = request.user.hostel.id
         return super().create(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        del request.data["hostel"]
+        return super().update(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(created_by=user, updated_by=user)

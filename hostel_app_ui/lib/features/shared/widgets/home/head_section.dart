@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/constants/image_constants.dart';
-import 'package:hostel_app/app/core/constants/route_constants.dart';
-import 'package:hostel_app/app/router/router.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_container.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends ConsumerWidget {
   final UserModel user;
   const HomeHeader({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ResponsiveContainer(
       width: 414,
       height: 300,
@@ -34,7 +34,8 @@ class HomeHeader extends StatelessWidget {
             child: IconButton(
               icon: Icon(Icons.login_outlined, color: Colors.black),
               onPressed: () {
-                router.goNamed(RouteConstantsNames.gettingStarted);
+                print("hello");
+                ref.watch(authNotifierProvider.notifier).logout();
               },
             ),
           ),
@@ -68,10 +69,7 @@ class HomeHeader extends StatelessWidget {
                         width: 14,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: user.isActive 
-                              ? Colors.green
-                              : Colors.red,
-
+                          color: user.isActive ? Colors.green : Colors.red,
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2),
                         ),

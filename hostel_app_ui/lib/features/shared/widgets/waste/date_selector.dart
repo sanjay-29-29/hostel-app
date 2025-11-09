@@ -16,7 +16,7 @@ class DateSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final days = List.generate(
-      5,
+      100,
       (i) => selectedDate.add(Duration(days: i - 1)),
     );
 

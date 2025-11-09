@@ -8,5 +8,5 @@ class Endpoints {
   static const String allUsers = userBase + 'all/';
   static const String createInfo = userBase + 'create-info/';
 
-  static const String waste = 'waste/';
+  static const String waste = 'wastes/';
 }

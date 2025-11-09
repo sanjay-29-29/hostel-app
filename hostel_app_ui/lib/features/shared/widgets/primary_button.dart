@@ -9,13 +9,13 @@ import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final VoidCallback? onBackPressed;
 
   const PrimaryButton({
     super.key,
     required this.text,
-    required this.onPressed,
+    this.onPressed,
     this.onBackPressed,
   });
 
@@ -43,11 +43,17 @@ class PrimaryButton extends StatelessWidget {
             ),
           ),
         ),
-    
         InkWell(
           onTap: onPressed,
           child: ResponsiveContainer(
-            color: ColorConstants.darkRed,
+            color: onPressed != null
+                ? ColorConstants.darkRed
+                : Color.from(
+                    alpha: 0.5,
+                    red: ColorConstants.darkRed.r,
+                    green: ColorConstants.darkRed.g,
+                    blue: ColorConstants.darkRed.b,
+                  ),
             width: 294,
             height: 52,
             child: Center(

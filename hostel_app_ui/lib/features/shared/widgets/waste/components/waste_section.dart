@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
-import 'package:hostel_app/features/waste/notifier/waste_manage_notifier.dart';
+import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:hostel_app/features/shared/widgets/waste/waste_input_field.dart';
 
 class WasteSection extends StatelessWidget {
@@ -23,7 +23,7 @@ class WasteSection extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> fields = [];
 
-    if (selectedTiming?.id == 0) {
+    if (selectedTiming?.id == 1) {
       fields.add(_buildCoffeeMilkField());
       fields.add(
         WasteInputField(
@@ -37,7 +37,7 @@ class WasteSection extends StatelessWidget {
           controller: cookedWasteController,
         ),
       );
-    } else if (selectedTiming?.id == 1) {
+    } else if (selectedTiming?.id == 4) {
       fields.add(_buildCoffeeMilkField());
     } else if (selectedTiming?.id == 2 || selectedTiming?.id == 3) {
       fields.add(

@@ -35,7 +35,7 @@ final manageUserNotifierProvider =
 // Waste Management Providers
 
 final wasteManagementRepositoryProvider = Provider(
-  (ref) => WasteManageRepositoryImpl(ref.watch(dioClientProvider)),
+  (ref) => WasteRepositoryImpl(ref.watch(dioClientProvider)),
 );
 
 final wasteManageNotifierProvider =

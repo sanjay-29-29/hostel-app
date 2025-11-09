@@ -5,25 +5,30 @@ part 'waste_model.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake)
 class WasteModel {
   int id;
+
   DateTime date;
   int studentsPresent;
-  int coffeWaste;
-  int foodCookedWaste;
-  String timing;
-  String hostel;
+  String timingName;
+  String hostelName;
+
   String createdBy;
   String updatedBy;
+
+  int? coffeWaste;
+  int? foodCookedWaste;
+  int? studentWaste;
 
   WasteModel({
     required this.id,
     required this.date,
     required this.studentsPresent,
-    required this.coffeWaste,
-    required this.foodCookedWaste,
-    required this.timing,
-    required this.hostel,
+    required this.timingName,
+    required this.hostelName,
     required this.createdBy,
     required this.updatedBy,
+    this.studentWaste,
+    this.coffeWaste,
+    this.foodCookedWaste,
   });
 
   factory WasteModel.fromJson(Map<String, dynamic> json) =>

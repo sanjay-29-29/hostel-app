@@ -12,9 +12,9 @@ class Timing(models.Model):
 
 
 class Waste(models.Model):
-    coffe_waste = models.IntegerField()
-    food_cooked_waste = models.IntegerField()
-    student_waste = models.IntegerField()
+    coffe_waste = models.IntegerField(null=True)
+    food_cooked_waste = models.IntegerField(null=True)
+    student_waste = models.IntegerField(null=True)
 
     students_present = models.IntegerField()
 

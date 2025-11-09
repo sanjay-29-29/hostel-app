@@ -120,8 +120,9 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  Future<void> logout() async {
+  void logout() {
     state = state.copyWith(status: AuthStatus.unauthenticated);
+    router.go(RouteConstantsNames.login);
     secureStorage.deleteAll();
   }
 }
