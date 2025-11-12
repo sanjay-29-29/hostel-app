@@ -6,4 +6,4 @@ from hostels.models import Hostel
 class HostelDropdownSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hostel
-        fields = ["id", "name"]
+        fields = ["id", "name", "students_count"]

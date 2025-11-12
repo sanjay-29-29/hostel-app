@@ -11,16 +11,23 @@ class Timing(models.Model):
         return self.name
 
 
+class Attendance(models.Model):
+    hostel = models.OneToOneField(to=Hostel, on_delete=models.CASCADE)
+    students_present = models.IntegerField()
+    students_absent = models.IntegerField()
+
+    def __str__(self) -> str:
+        return self.hostel.name
+
+
 class Waste(models.Model):
+    date = models.DateField()
     coffe_waste = models.IntegerField(null=True)
     food_cooked_waste = models.IntegerField(null=True)
     student_waste = models.IntegerField(null=True)
-
-    students_present = models.IntegerField()
-
-    date = models.DateField()
     hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
     timing = models.ForeignKey(to=Timing, on_delete=models.CASCADE)
+    attendances = models.ManyToManyField(to=Attendance, related_name="attendances")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

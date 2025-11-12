@@ -48,6 +48,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             "role",
             "password",
             "confirm_password",
+            "is_active",
         ]
 
     def validate(self, attrs):
@@ -75,8 +76,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class FetchAllUserSerializer(serializers.ModelSerializer):
-    hostel = serializers.CharField(source="hostel.name")
-    role = serializers.CharField(source="role.name")
+    hostel = HostelDropdownSerializer()
+    role = RoleDropdownSerializer()
 
     class Meta:
         model = get_user_model()

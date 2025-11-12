@@ -1,3 +1,4 @@
+import json
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
 
@@ -8,8 +9,10 @@ from .serializers import WasteSerializer
 
 class WasteViewSet(ModelViewSet):
     serializer_class = WasteSerializer
-    queryset = Waste.objects.all().select_related(
-        "created_by", "updated_by", "timing", "hostel"
+    queryset = (
+        Waste.objects.all()
+        .select_related("created_by", "updated_by", "timing", "hostel")
+        .prefetch_related("attendances")
     )
     filter_backends = [DjangoFilterBackend]
     filterset_class = WasteFilter
@@ -19,7 +22,8 @@ class WasteViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        del request.data["hostel"]
+        if request.data.get("hostel") is not None:
+            del request.data["hostel"]
         return super().update(request, *args, **kwargs)
 
     def perform_create(self, serializer):

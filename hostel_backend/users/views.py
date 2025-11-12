@@ -57,7 +57,9 @@ class CreateUpdateUserView(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "update" or self.action == "partial_update":
             return users_serializer.UserUpdateSerializer
-        return users_serializer.UserCreateSerializer
+        if self.action == "create":
+            return users_serializer.UserCreateSerializer
+        return users_serializer.FetchAllUserSerializer
 
 
 class CreateUserInfoGetView(APIView):
