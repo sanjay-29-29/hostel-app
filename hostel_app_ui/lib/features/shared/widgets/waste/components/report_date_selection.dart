@@ -19,46 +19,55 @@ class ReportDateSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 4,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ResponsiveContainer(
-          width: 173,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ResponsiveText(
-                label,
-                style: TextStyle(fontSize: 16, color: Colors.black),
-              ),
-              GestureDetector(
-                onTap: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (_) => CustomCalendarDialog(
-                      selectedDate: selectedDate,
-                      onDateSelected: onDateChanged,
-                    ),
-                  );
-                },
-                child: Container(
+    return GestureDetector(
+      onTap: () async {
+        await showDialog(
+          context: context,
+          builder: (_) => CustomCalendarDialog(
+            selectedDate: selectedDate,
+            onDateSelected: onDateChanged,
+          ),
+        );
+      },
+      child: Column(
+        spacing: 4,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ResponsiveContainer(
+            width: 173,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ResponsiveText(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
                   decoration: BoxDecoration(
                     color: ColorConstants.primaryColor,
                     shape: BoxShape.circle,
                   ),
                   padding: const EdgeInsets.all(10),
-                  child: const Icon(Icons.calendar_month, color: Colors.white),
+                  child: const Icon(
+                    Icons.calendar_month,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        ResponsiveText(
-          DateFormat('MMMM, dd, yyyy').format(selectedDate),
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
+          Text(
+            DateFormat('MMMM, dd, yyyy').format(selectedDate),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }

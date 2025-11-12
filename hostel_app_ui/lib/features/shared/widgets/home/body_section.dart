@@ -55,6 +55,18 @@ class HomeBody extends StatelessWidget {
               );
             },
           ),
+          _buildMenuCard(
+            context,
+            imagePath: IconAssetConstants.foodIcon,
+            title1: 'REPORT',
+            title2: 'VIEW',
+            onTap: () {
+              router.pushNamed(
+                RouteConstantsNames.reportView,
+                extra: {'member': user, 'canEdit': false},
+              );
+            },
+          ),
         ],
       ),
     );
