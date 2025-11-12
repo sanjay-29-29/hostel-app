@@ -35,9 +35,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // a flag to avoid re-setting selected models repeatedly
-  bool _initializedSelectionFromBaseInfo = false;
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +44,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     phoneController = TextEditingController(text: widget.user.phoneNumber);
     isActive = widget.user.isActive;
 
-    // Try to initialize selection from currently available baseInfo (if present)
     final baseInfo = ref.read(authNotifierProvider).baseInfo;
     if (baseInfo != null) {
       _setSelectionFromBaseInfo(baseInfo.hostels, baseInfo.roles);
@@ -58,26 +54,24 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     List<HostelModel>? hostels,
     List<RoleModel>? roles,
   ) {
-    // select the actual instances from the lists (match by id)
-    if (roles != null && widget.user.role != null) {
+    if (roles != null) {
       try {
-        final match = roles.firstWhere((r) => r.id == widget.user.role);
+        final match = roles.firstWhere((r) => r.id == widget.user.role.id);
         selectedRole = match;
       } catch (_) {
         selectedRole = null;
       }
     }
 
-    if (hostels != null && widget.user.hostel != null) {
+    if (hostels != null) {
       try {
-        final match = hostels.firstWhere((h) => h.id == widget.user.hostel);
+        final match = hostels.firstWhere((h) => h.id == widget.user.hostel.id);
         selectedHostel = match;
       } catch (_) {
         selectedHostel = null;
       }
     }
 
-    _initializedSelectionFromBaseInfo = true;
     if (mounted) setState(() {});
   }
 
@@ -94,8 +88,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ToastHelper.showError('Please fix all validation errors');
       return;
     }
-
-    // Ensure dropdowns have selections
     if (selectedRole == null || selectedHostel == null) {
       ToastHelper.showError('Please select hostel and role');
       return;
@@ -119,9 +111,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
       ToastHelper.showSuccess('User updated successfully!');
 
-      // navigate back and open updated profile (adjust based on your flow)
-      router.pop(); // close edit screen
-      router.pop(); // close previous screen (if needed)
+      router.pop();
+      router.pop();
       router.pushNamed(
         RouteConstantsNames.profile,
         extra: {'user': widget.user.id, 'canEdit': true},
@@ -194,7 +185,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
                         FormCard(
                           children: [
-                            // HOSTEL dropdown (enabled only when baseInfo.hostels available)
                             CustomDropdownField<HostelModel>(
                               getLabel: (HostelModel h) => h.name,
                               label: 'HOSTEL NAME',
@@ -213,9 +203,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               },
                             ),
 
-                            const SizedBox(height: 12),
-
-                            // ROLE dropdown
                             CustomDropdownField<RoleModel>(
                               getLabel: (RoleModel role) => role.name,
                               label: 'ROLE',

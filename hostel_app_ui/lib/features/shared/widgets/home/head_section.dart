@@ -34,7 +34,6 @@ class HomeHeader extends ConsumerWidget {
             child: IconButton(
               icon: Icon(Icons.login_outlined, color: Colors.black),
               onPressed: () {
-                print("hello");
                 ref.watch(authNotifierProvider.notifier).logout();
               },
             ),
@@ -85,7 +84,7 @@ class HomeHeader extends ConsumerWidget {
                     ),
                   ),
                   ResponsiveText(
-                    '${user.role}',
+                    '${user.role.name} - ${user.hostel.name}',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,

@@ -83,28 +83,36 @@ class HomeBody extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: onTap,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SvgPicture.asset(imagePath, semanticsLabel: '$title1 $title2 Icon'),
-          const SizedBox(height: 10),
-          ResponsiveText(
-            title1,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              letterSpacing: 1.2,
+      child: Container(
+        color: Colors.redAccent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/icons/food.svg',
+              width: 100,
+              height: 100,
+              color: Colors.white,
             ),
-          ),
-          ResponsiveText(
-            title2,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              letterSpacing: 1.2,
+            const SizedBox(height: 10),
+            ResponsiveText(
+              title1,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                letterSpacing: 1.2,
+              ),
             ),
-          ),
-        ],
+            ResponsiveText(
+              title2,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                letterSpacing: 1.2,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
