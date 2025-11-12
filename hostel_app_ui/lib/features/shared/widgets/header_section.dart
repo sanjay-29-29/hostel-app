@@ -24,8 +24,7 @@ class HeaderSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ResponsiveContainer(
+  Widget build(BuildContext context) {    return ResponsiveContainer(
       height: isProfilePage ? 362 : 200,
       width: double.infinity,
       decoration: BoxDecoration(
@@ -69,7 +68,7 @@ class HeaderSection extends StatelessWidget {
                     InkWell(
                       onTap: () => router.pushNamed(
                         RouteConstantsNames.editProfile,
-                        extra: user,
+                        extra: user as UserModel,
                       ),
                       borderRadius: BorderRadius.circular(8),
                       child: ResponsiveContainer(

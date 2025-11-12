@@ -6,8 +6,9 @@ part 'hostel_model.g.dart';
 class HostelModel {
   int id;
   String name;
+  int studentsCount;
 
-  HostelModel({required this.id, required this.name});
+  HostelModel({required this.id, required this.name, required this.studentsCount});
 
   factory HostelModel.fromJson(Map<String, dynamic> json) =>
       _$HostelModelFromJson(json);

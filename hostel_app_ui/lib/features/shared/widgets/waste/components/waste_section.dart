@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
-import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:hostel_app/features/shared/widgets/waste/waste_input_field.dart';
 
 class WasteSection extends StatelessWidget {

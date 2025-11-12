@@ -10,6 +10,9 @@ abstract class UserRepository {
   Future<Result<List<UserModel>, Exception>> fetchUsers();
   Future<Result<UserCreateInfoModel, Exception>> fetchUserCreateInfo();
   Future<Result<int, BackendError>> createUser(CreateUserModel model);
+  Future<Result<int, BackendError>> updateUser(UpdateUserModel model);
+
+  Future<Result<UserModel, BackendError>> fetchUserByid(int userId);
 }
 
 class UserRepositoryImpl implements UserRepository {
@@ -41,12 +44,34 @@ class UserRepositoryImpl implements UserRepository {
 
   Future<Result<int, BackendError>> createUser(CreateUserModel model) async {
     try {
-      final response =
-          await _dioClient.post(Endpoints.userBase, data: model.toJson());
+      final response = await _dioClient.post(
+        Endpoints.userBase,
+        data: model.toJson(),
+      );
       return Success(response.statusCode!);
     } on DioException catch (e) {
       return Failure(BackendError.fromJson(e.response?.data));
     }
   }
-}
 
+  Future<Result<int, BackendError>> updateUser(UpdateUserModel model) async {
+    try {
+      final response = await _dioClient.patch(
+        '${Endpoints.userBase}/${model.id}/',
+        data: model.toJson(),
+      );
+      return Success(response.statusCode!);
+    } on DioException catch (e) {
+      return Failure(BackendError.fromJson(e.response?.data));
+    }
+  }
+
+  Future<Result<UserModel, BackendError>> fetchUserByid(int userId) async {
+    try {
+      final response = await _dioClient.get('${Endpoints.userBase}/$userId/');
+      return Success(UserModel.fromJson(response.data));
+    } on DioException catch (e) {
+      return Failure(BackendError.fromJson(e.response?.data));
+    }
+  }
+}

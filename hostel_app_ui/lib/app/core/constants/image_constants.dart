@@ -7,7 +7,7 @@ class ImageConstants {
       'assets/images/getting_started/assuring_the_best.png';
 
   static const String attendanceIcon = 'assets/images/home/attendace.png';
-  static const String foodIcon = 'assets/images/home/food.png';
+  static const String foodImage = 'assets/images/home/food_1.svg';
 
   static const String gridImage = 'assets/images/common/grid_image.png';
 }

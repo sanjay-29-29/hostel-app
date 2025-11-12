@@ -11,8 +11,8 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   name: json['name'] as String,
   email: json['email'] as String,
   dateJoined: json['date_joined'] as String,
-  role: json['role'] as String,
-  hostel: json['hostel'] as String,
+  role: RoleModel.fromJson(json['role'] as Map<String, dynamic>),
+  hostel: HostelModel.fromJson(json['hostel'] as Map<String, dynamic>),
   phoneNumber: json['phone_number'] as String,
   isActive: json['is_active'] as bool,
   isNew: json['is_new'] as bool,
@@ -29,3 +29,27 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'is_active': instance.isActive,
   'is_new': instance.isNew,
 };
+
+UpdateUserModel _$UpdateUserModelFromJson(Map<String, dynamic> json) =>
+    UpdateUserModel(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+      email: json['email'] as String,
+      role: (json['role'] as num).toInt(),
+      hostel: (json['hostel'] as num).toInt(),
+      phoneNumber: json['phone_number'] as String,
+      isActive: json['is_active'] as bool,
+      isNew: json['is_new'] as bool,
+    );
+
+Map<String, dynamic> _$UpdateUserModelToJson(UpdateUserModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'email': instance.email,
+      'name': instance.name,
+      'phone_number': instance.phoneNumber,
+      'role': instance.role,
+      'hostel': instance.hostel,
+      'is_active': instance.isActive,
+      'is_new': instance.isNew,
+    };

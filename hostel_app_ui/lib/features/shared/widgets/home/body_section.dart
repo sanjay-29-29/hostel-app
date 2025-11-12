@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hostel_app/app/core/constants/assets_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
@@ -51,7 +52,7 @@ class HomeBody extends StatelessWidget {
             onTap: () {
               router.pushNamed(
                 RouteConstantsNames.profile,
-                extra: {'member': user, 'canEdit': false},
+                extra: {'user': user.id, 'canEdit': false},
               );
             },
           ),
@@ -85,7 +86,7 @@ class HomeBody extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: Image.asset(imagePath, fit: BoxFit.contain)),
+          SvgPicture.asset(imagePath, semanticsLabel: '$title1 $title2 Icon'),
           const SizedBox(height: 10),
           ResponsiveText(
             title1,

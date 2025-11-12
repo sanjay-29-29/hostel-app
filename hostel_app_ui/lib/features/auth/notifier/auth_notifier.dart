@@ -11,11 +11,7 @@ import 'package:hostel_app/features/shared/models/base_info/base_info_model.dart
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
-enum AuthStatus {
-  authenticated,
-  unauthenticated,
-  loading,
-}
+enum AuthStatus { authenticated, unauthenticated, loading }
 
 class AuthState {
   final AuthStatus status;
@@ -93,7 +89,7 @@ class AuthNotifier extends Notifier<AuthState> {
           secureStorage.saveKey('user', jsonEncode(userModel.toJson()));
           secureStorage.saveKey('token', token);
           ToastHelper.showSuccess('Login Successfull');
-
+          fetchBaseInfo();
           router.goNamed(RouteConstantsNames.home);
         },
         onFailure: (error) {
@@ -110,11 +106,8 @@ class AuthNotifier extends Notifier<AuthState> {
           );
         },
       );
-      await fetchBaseInfo();
     } catch (e) {
-      ToastHelper.showError(
-        'Something went wrong',
-      );
+      ToastHelper.showError('Something went wrong');
       print(e);
       state = state.copyWith(status: AuthStatus.unauthenticated);
     }

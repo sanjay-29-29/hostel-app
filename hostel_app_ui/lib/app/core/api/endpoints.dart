@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://192.168.29.127:8000/api/';
+  static const String baseUrl = 'https://w2q6m5k0-8000.inc1.devtunnels.ms/api/';
 
   static const String login = 'token/';
   static const String register = 'register/';

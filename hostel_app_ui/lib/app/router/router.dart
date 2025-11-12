@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/features/home/presentation/home_screen.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
 import 'package:hostel_app/features/user/presentation/add_user_screen.dart';
+import 'package:hostel_app/features/user/presentation/edit_profile_screen.dart';
 import 'package:hostel_app/features/user/presentation/manage_user_screen.dart';
 import 'package:hostel_app/features/auth/presentation/getting_started_screen.dart';
 import 'package:hostel_app/features/auth/presentation/login_screen.dart';
@@ -65,14 +67,17 @@ final router = GoRouter(
       name: RouteConstantsNames.profile,
       builder: (context, state) {
         final data = state.extra as Map<String, dynamic>;
-        return ProfileScreen(user: data['user'], canEdit: data['canEdit']);
+        return ProfileScreen(userId: data['user'], canEdit: data['canEdit']);
       },
     ),
-    // GoRoute(
-    //   path: RouteConstants.editProfile,
-    //   name: RouteConstantsNames.editProfile,
-    //   builder: (context, state) {EditProfileScreen(member: member);
-    // ),
+    GoRoute(
+      path: RouteConstants.editProfile,
+      name: RouteConstantsNames.editProfile,
+      builder: (context, state) {
+        final user = state.extra as UserModel;
+        return EditProfileScreen(user: user);
+      },
+    ),
   ],
   errorBuilder: (context, state) =>
       Scaffold(body: Center(child: Text('Page not found'))),

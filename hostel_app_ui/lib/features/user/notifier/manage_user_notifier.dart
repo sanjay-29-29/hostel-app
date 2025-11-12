@@ -24,6 +24,7 @@ class ManageUserState {
   final List<UserModel> users;
   final List<UserModel> filteredUsers;
   final SelectedStatus selectedStatus;
+  final UserModel? selectedUser;
   final String? searchQuery;
   final SortOrder sortOrder;
   final bool isLoading;
@@ -33,6 +34,7 @@ class ManageUserState {
     required this.filteredUsers,
     required this.selectedStatus,
     required this.sortOrder,
+    this.selectedUser,
     this.searchQuery,
     this.isLoading = false,
   });
@@ -43,6 +45,7 @@ class ManageUserState {
     SelectedStatus? selectedStatus,
     String? searchQuery,
     SortOrder? sortOrder,
+    UserModel? selectedUser,
     bool? isLoading,
   }) {
     return ManageUserState(
@@ -52,16 +55,18 @@ class ManageUserState {
       searchQuery: searchQuery ?? this.searchQuery,
       sortOrder: sortOrder ?? this.sortOrder,
       isLoading: isLoading ?? this.isLoading,
+      selectedUser: selectedUser ?? this.selectedUser,
     );
   }
 
   factory ManageUserState.initial() => ManageUserState(
-        users: [],
-        filteredUsers: [],
-        selectedStatus: SelectedStatus.All,
-        sortOrder: SortOrder.Ascending,
-        isLoading: false,
-      );
+    users: [],
+    filteredUsers: [],
+    selectedStatus: SelectedStatus.All,
+    sortOrder: SortOrder.Ascending,
+    isLoading: false,
+    selectedUser: null,
+  );
 }
 
 class ManageUserNotifier extends StateNotifier<ManageUserState> {
@@ -76,10 +81,7 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
 
     response.fold(
       onSuccess: (users) {
-        state = state.copyWith(
-          users: users,
-          isLoading: false,
-        );
+        state = state.copyWith(users: users, isLoading: false);
         _applyAllFilters();
       },
       onFailure: (e) {
@@ -87,6 +89,26 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
         ToastHelper.showError('Failed to fetch users');
       },
     );
+  }
+
+  Future<void> fetchUserById(int userId) async {
+    state = state.copyWith(isLoading: true);
+
+    final response = await _repository.fetchUserByid(userId);
+
+    response.fold(
+      onSuccess: (user) {
+        state = state.copyWith(isLoading: false, selectedUser: user);
+      },
+      onFailure: (e) {
+        state = state.copyWith(isLoading: false);
+        ToastHelper.showError('Failed to fetch user details');
+      },
+    );
+  }
+
+  void clearSelectedUser() {
+    state = state.copyWith(selectedUser: null);
   }
 
   void searchUsers(String? searchQuery) {
@@ -106,9 +128,7 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
   }
 
   void clearSearch() {
-    state = state.copyWith(
-      searchQuery: null,
-    );
+    state = state.copyWith(searchQuery: null);
     _applyAllFilters();
   }
 
@@ -127,10 +147,13 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
       final hasSearchQuery =
           state.searchQuery != null && state.searchQuery!.isNotEmpty;
       if (hasSearchQuery) {
-        final matchesSearch = user.name
-                .toLowerCase()
-                .contains(state.searchQuery!.toLowerCase()) ||
-            user.role.toLowerCase().contains(state.searchQuery!.toLowerCase());
+        final matchesSearch =
+            user.name.toLowerCase().contains(
+              state.searchQuery!.toLowerCase(),
+            ) ||
+            user.role.name.toLowerCase().contains(
+              state.searchQuery!.toLowerCase(),
+            );
         if (!matchesSearch) return false;
       }
 
@@ -170,4 +193,3 @@ class ManageUserNotifier extends StateNotifier<ManageUserState> {
     // TODO
   }
 }
-

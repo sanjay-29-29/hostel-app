@@ -12,7 +12,7 @@ class AuthInterceptor extends Interceptor {
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final publicEndpoints = {
-      'login',
+      'token',
     };
 
     final requiresAuth =

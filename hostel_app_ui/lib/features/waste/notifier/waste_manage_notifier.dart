@@ -10,12 +10,14 @@ import 'package:hostel_app/features/waste/repository/waste_manage_repository.dar
 class WasteManageState {
   final bool isFetching;
   final bool isCreating;
+  final bool isLoading;
   final WasteModel? waste;
   final List<WasteModel>? wastes;
 
   const WasteManageState({
     this.isFetching = false,
     this.isCreating = false,
+    this.isLoading = false,
     this.waste = null,
     this.wastes = null,
   });
@@ -23,12 +25,14 @@ class WasteManageState {
   WasteManageState copyWith({
     bool? isFetching,
     bool? isCreating,
+    bool? isLoading,
     WasteModel? waste,
     List<WasteModel>? wastes,
   }) {
     return WasteManageState(
       isCreating: isCreating ?? this.isCreating,
       isFetching: isFetching ?? this.isFetching,
+      isLoading: isLoading ?? this.isLoading,
       waste: waste ?? this.waste,
       wastes: wastes ?? this.wastes,
     );
@@ -40,6 +44,7 @@ class WasteManageState {
       isCreating: this.isCreating,
       waste: null,
       wastes: this.wastes,
+      isLoading: this.isLoading,
     );
   }
 
@@ -55,15 +60,15 @@ class WasteManageNotifier extends Notifier<WasteManageState> {
   }
 
   Future<void> addWaste(WasteCreateModel waste) async {
-    state = state.copyWith(isCreating: true);
+    state = state.copyWith(isCreating: true,isLoading: true);
     final response = await _repository.addWaste(waste);
     response.fold(
       onSuccess: (res) {
-        state = state.copyWith(isCreating: false);
+        state = state.copyWith(isCreating: false, isLoading: false);
         ToastHelper.showSuccess('Waste Data Added Successfully');
       },
       onFailure: (e) {
-        state = state.copyWith(isCreating: false);
+        state = state.copyWith(isCreating: false, isLoading: false);
         ToastHelper.showError('Failed to add Waste Data');
       },
     );

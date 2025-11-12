@@ -1,216 +1,310 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:hostel_app/app/core/constants/color_constants.dart';
-// import 'package:hostel_app/app/core/constants/route_constants.dart';
-// import 'package:hostel_app/app/core/utils/toast_utils.dart';
-// import 'package:hostel_app/app/router/router.dart';
-// import 'package:hostel_app/features/shared/models/user/user_model.dart';
-// import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
-// import 'package:hostel_app/features/shared/widgets/forms/custom_text_field.dart';
-// import 'package:hostel_app/features/shared/widgets/forms/form_card.dart';
-// import 'package:hostel_app/features/shared/widgets/header_section.dart';
-// import 'package:hostel_app/features/shared/widgets/primary_button.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/core/constants/route_constants.dart';
+import 'package:hostel_app/app/core/utils/toast_utils.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
+import 'package:hostel_app/app/router/router.dart';
+import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
+import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
+import 'package:hostel_app/features/shared/models/role/role_model.dart';
+import 'package:hostel_app/features/shared/models/user/user_model.dart';
+import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
+import 'package:hostel_app/features/shared/widgets/forms/custom_text_field.dart';
+import 'package:hostel_app/features/shared/widgets/forms/form_card.dart';
+import 'package:hostel_app/features/shared/widgets/header_section.dart';
+import 'package:hostel_app/features/shared/widgets/primary_button.dart';
 
-// class EditProfileScreen extends StatefulWidget {
-//   final UserModel user;
-//   const EditProfileScreen({super.key, required this.user});
+class EditProfileScreen extends ConsumerStatefulWidget {
+  final UserModel user;
+  const EditProfileScreen({super.key, required this.user});
 
-//   @override
-//   State<EditProfileScreen> createState() => _EditProfileScreenState();
-// }
+  @override
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
+}
 
-// class _EditProfileScreenState extends State<EditProfileScreen> {
-//   final List<String> hostelNames = ['Ilango', 'Kaveri', 'Vaigai', 'Bhavani'];
-//   final List<String> roles = ['Warden', 'Floor Warden', 'Care Taker'];
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
+  late final TextEditingController userNameController;
+  late final TextEditingController emailController;
+  late final TextEditingController phoneController;
 
-//   late TextEditingController userNameController;
-//   late TextEditingController emailController;
-//   late TextEditingController phoneController;
+  HostelModel? selectedHostel;
+  RoleModel? selectedRole;
+  bool isActive = true;
 
-//   String? selectedHostel;
-//   String? selectedRole;
-//   bool isActive = true;
+  final _formKey = GlobalKey<FormState>();
 
-//   final _formKey = GlobalKey<FormState>();
+  // a flag to avoid re-setting selected models repeatedly
+  bool _initializedSelectionFromBaseInfo = false;
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     userNameController = TextEditingController(text: widget.user.name);
-//     emailController = TextEditingController(text: widget.user.email);
-//     phoneController = TextEditingController(text: widget.user.phoneNumber);
+  @override
+  void initState() {
+    super.initState();
 
-//     selectedRole = widget.user.role;
-//     isActive = widget.user.isActive;
-//   }
+    userNameController = TextEditingController(text: widget.user.name);
+    emailController = TextEditingController(text: widget.user.email);
+    phoneController = TextEditingController(text: widget.user.phoneNumber);
+    isActive = widget.user.isActive;
 
-//   @override
-//   void dispose() {
-//     userNameController.dispose();
-//     emailController.dispose();
-//     phoneController.dispose();
-//     super.dispose();
-//   }
+    // Try to initialize selection from currently available baseInfo (if present)
+    final baseInfo = ref.read(authNotifierProvider).baseInfo;
+    if (baseInfo != null) {
+      _setSelectionFromBaseInfo(baseInfo.hostels, baseInfo.roles);
+    }
+  }
 
-//   void _handleSubmit() {
-//     if (_formKey.currentState!.validate()) {
-//       final updatedUser = widget.user.copyWith(
-//         name: userNameController.text.trim(),
-//         email: emailController.text.trim(),
-//         phoneNumber: phoneController.text.trim(),
-//         hostel: selectedHostel ?? widget.user.hostel,
-//         role: selectedRole ?? widget.user.role,
-//         status: isActive ? 'Active' : 'Inactive',
-//       );
-//       debugPrint('--- Updated User ---');
-//       debugPrint('Name: ${updatedUser.name}');
-//       debugPrint('Email: ${updatedUser.email}');
-//       debugPrint('Phone: ${updatedUser.phoneNumber}');
-//       debugPrint('Hostel: ${updatedUser.hostel}');
-//       debugPrint('Role: ${updatedUser.role}');
-//       debugPrint('Status: ${updatedUser.status}');
-//       debugPrint('-----------------------');
+  void _setSelectionFromBaseInfo(
+    List<HostelModel>? hostels,
+    List<RoleModel>? roles,
+  ) {
+    // select the actual instances from the lists (match by id)
+    if (roles != null && widget.user.role != null) {
+      try {
+        final match = roles.firstWhere((r) => r.id == widget.user.role);
+        selectedRole = match;
+      } catch (_) {
+        selectedRole = null;
+      }
+    }
 
-//       ToastHelper.showSuccess('User updated successfully!');
+    if (hostels != null && widget.user.hostel != null) {
+      try {
+        final match = hostels.firstWhere((h) => h.id == widget.user.hostel);
+        selectedHostel = match;
+      } catch (_) {
+        selectedHostel = null;
+      }
+    }
 
-//       router.pop();
-//       router.pop();
-//       router.pushNamed(
-//         RouteConstantsNames.profile,
-//         extra: {'user': updatedUser, 'canEdit': true},
-//       );
-//     } else {
-//       ToastHelper.showError('Please fix all validation errors');
-//     }
-//   }
+    _initializedSelectionFromBaseInfo = true;
+    if (mounted) setState(() {});
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: ColorConstants.bgLight,
-//       bottomNavigationBar: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-//         child: PrimaryButton(text: 'UPDATE USER', onPressed: _handleSubmit),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             HeaderSection(title1: 'UPDATE', title2: 'USER PROFILE'),
-//             Padding(
-//               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-//               child: Form(
-//                 key: _formKey,
-//                 autovalidateMode: AutovalidateMode.onUserInteraction,
-//                 child: Column(
-//                   spacing: 32,
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     FormCard(
-//                       children: [
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                           children: [
-//                             Text(
-//                               isActive ? 'User Active' : 'User Deactivated',
-//                               style: TextStyle(
-//                                 fontSize: 16,
-//                                 fontWeight: FontWeight.w600,
-//                                 color: isActive
-//                                     ? Colors.green
-//                                     : Colors.redAccent,
-//                               ),
-//                             ),
-//                             CupertinoSwitch(
-//                               value: isActive,
-//                               activeColor: Colors.green,
-//                               onChanged: (bool value) {
-//                                 setState(() {
-//                                   isActive = value;
-//                                 });
-//                               },
-//                             ),
-//                           ],
-//                         ),
-//                       ],
-//                     ),
+  @override
+  void dispose() {
+    userNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
-//                     FormCard(
-//                       children: [
-//                         CustomDropdownField(
-//                           label: 'HOSTEL NAME',
-//                           hint: 'Select Hostel',
-//                           value: selectedHostel,
-//                           items: hostelNames,
-//                           onChanged: (val) =>
-//                               setState(() => selectedHostel = val),
-//                           validator: (val) =>
-//                               val == null ? 'Please select a hostel' : null,
-//                         ),
-//                         CustomDropdownField(
-//                           label: 'ROLE',
-//                           hint: 'Select Role',
-//                           value: selectedRole,
-//                           items: roles,
-//                           onChanged: (val) =>
-//                               setState(() => selectedRole = val),
-//                           validator: (val) =>
-//                               val == null ? 'Please select a role' : null,
-//                         ),
-//                       ],
-//                     ),
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate()) {
+      ToastHelper.showError('Please fix all validation errors');
+      return;
+    }
 
-//                     FormCard(
-//                       children: [
-//                         CustomTextField(
-//                           label: 'USER NAME',
-//                           hint: 'Enter user name',
-//                           controller: userNameController,
-//                           validator: (val) {
-//                             if (val == null || val.isEmpty) {
-//                               return 'Username is required';
-//                             } else if (val.length < 4) {
-//                               return 'Username must be at least 4 characters';
-//                             }
-//                             return null;
-//                           },
-//                         ),
-//                         CustomTextField(
-//                           label: 'EMAIL ADDRESS',
-//                           hint: 'Enter Email Address',
-//                           controller: emailController,
-//                           keyboardType: TextInputType.emailAddress,
-//                           validator: (val) {
-//                             if (val == null || val.isEmpty) {
-//                               return 'Email is required';
-//                             } else if (!val.contains('@')) {
-//                               return 'Enter a valid email';
-//                             }
-//                             return null;
-//                           },
-//                         ),
-//                         CustomTextField(
-//                           label: 'PHONE NUMBER',
-//                           hint: 'Enter Phone Number',
-//                           controller: phoneController,
-//                           keyboardType: TextInputType.phone,
-//                           validator: (val) {
-//                             if (val == null || val.isEmpty) {
-//                               return 'Phone number is required';
-//                             } else if (val.length != 10) {
-//                               return 'Enter a valid phone number';
-//                             }
-//                             return null;
-//                           },
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+    // Ensure dropdowns have selections
+    if (selectedRole == null || selectedHostel == null) {
+      ToastHelper.showError('Please select hostel and role');
+      return;
+    }
+
+    try {
+      await ref
+          .read(addUserNotifierProvider.notifier)
+          .UpdateUser(
+            UpdateUserModel(
+              id: widget.user.id,
+              isNew: false,
+              name: userNameController.text.trim(),
+              email: emailController.text.trim(),
+              phoneNumber: phoneController.text.trim(),
+              isActive: isActive,
+              role: selectedRole!.id,
+              hostel: selectedHostel!.id,
+            ),
+          );
+
+      ToastHelper.showSuccess('User updated successfully!');
+
+      // navigate back and open updated profile (adjust based on your flow)
+      router.pop(); // close edit screen
+      router.pop(); // close previous screen (if needed)
+      router.pushNamed(
+        RouteConstantsNames.profile,
+        extra: {'user': widget.user.id, 'canEdit': true},
+      );
+    } catch (e) {
+      ToastHelper.showError('Failed to update user');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final addUserState = ref.watch(addUserNotifierProvider);
+    final baseInfo = ref.watch(authNotifierProvider).baseInfo;
+
+    final formErrors = addUserState.error;
+
+    return Scaffold(
+      backgroundColor: ColorConstants.bgLight,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: PrimaryButton(text: 'UPDATE USER', onPressed: _handleSubmit),
+      ),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                HeaderSection(title1: 'UPDATE', title2: 'USER PROFILE'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FormCard(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ResponsiveText(
+                                  isActive ? 'User Active' : 'User Deactivated',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: isActive
+                                        ? Colors.green
+                                        : Colors.redAccent,
+                                  ),
+                                ),
+                                CupertinoSwitch(
+                                  value: isActive,
+                                  activeColor: Colors.green,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      isActive = value;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        FormCard(
+                          children: [
+                            // HOSTEL dropdown (enabled only when baseInfo.hostels available)
+                            CustomDropdownField<HostelModel>(
+                              getLabel: (HostelModel h) => h.name,
+                              label: 'HOSTEL NAME',
+                              hint: 'Select Hostel',
+                              value: selectedHostel,
+                              items: baseInfo?.hostels ?? [],
+                              onChanged: (baseInfo?.hostels != null)
+                                  ? (HostelModel? hostel) {
+                                      setState(() => selectedHostel = hostel);
+                                    }
+                                  : null,
+                              validator: (value) {
+                                if (value == null)
+                                  return 'This field is required';
+                                return null;
+                              },
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            // ROLE dropdown
+                            CustomDropdownField<RoleModel>(
+                              getLabel: (RoleModel role) => role.name,
+                              label: 'ROLE',
+                              hint: 'Select Role',
+                              value: selectedRole,
+                              items: baseInfo?.roles ?? [],
+                              onChanged: (baseInfo?.roles != null)
+                                  ? (RoleModel? role) {
+                                      setState(() => selectedRole = role);
+                                    }
+                                  : null,
+                              validator: (value) {
+                                if (value == null)
+                                  return 'This field is required';
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        FormCard(
+                          children: [
+                            CustomTextField(
+                              label: 'USER NAME',
+                              hint: 'Enter user name',
+                              controller: userNameController,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Username is required';
+                                } else if (val.length < 4) {
+                                  return 'Username must be at least 4 characters';
+                                }
+                                return null;
+                              },
+                              errors: formErrors?.errors['name']?[0],
+                            ),
+                            CustomTextField(
+                              label: 'EMAIL ADDRESS',
+                              hint: 'Enter Email Address',
+                              controller: emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Email is required';
+                                } else if (!val.contains('@')) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
+                              errors: formErrors?.errors['email']?[0],
+                            ),
+                            CustomTextField(
+                              label: 'PHONE NUMBER',
+                              hint: 'Enter Phone Number',
+                              controller: phoneController,
+                              keyboardType: TextInputType.phone,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Phone number is required';
+                                } else if (val.length != 10) {
+                                  return 'Enter a valid phone number';
+                                }
+                                return null;
+                              },
+                              errors: formErrors?.errors['phone_number']?[0],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            if (addUserState.isLoading)
+              const Opacity(
+                opacity: 0.6,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

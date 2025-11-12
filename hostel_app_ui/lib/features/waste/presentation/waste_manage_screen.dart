@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/app/core/utils/loading.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
@@ -117,81 +118,78 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
     return Scaffold(
       backgroundColor: ColorConstants.bgLight,
       body: SingleChildScrollView(
-        child: Column(
+        child: Stack(
           children: [
-            HeaderSection(title1: 'FOOD', title2: 'MANAGEMENT'),
-            const ResponsiveSizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.all(24),
-              child: Column(
-                spacing: 16,
-                children: [
-                  DateSection(
-                    selectedDate: selectedDate,
-                    onDateChanged: _handleDateChange,
-                  ),
-                  DateSelector(
-                    selectedDate: selectedDate,
-                    onSelect: _handleDateChange,
-                  ),
-                  CustomDropdownField<TimingModel>(
-                    label: 'Select Meal Time',
-                    hint: 'Choose a meal time',
-                    items: baseInfo?.timings ?? [],
-                    value: _timing,
-                    getLabel: (meal) => meal.name,
-                    onChanged: baseInfo?.timings != null
-                        ? (val) {
-                            setState(() {
-                              _timing = val;
-                            });
-                            _handleDateAndTimingChange();
-                          }
-                        : null,
-                  ),
-                  if (wasteState.isFetching)
-                    Container(
-                      height: 300,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: ColorConstants.primaryColor,
-                        ),
+            if (wasteState.isLoading) LoadingScreen(),
+            Column(
+              children: [
+                HeaderSection(title1: 'FOOD', title2: 'MANAGEMENT'),
+                const ResponsiveSizedBox(height: 20),
+                Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Column(
+                    spacing: 16,
+                    children: [
+                      DateSection(
+                        selectedDate: selectedDate,
+                        onDateChanged: _handleDateChange,
                       ),
-                    )
-                  else if (_timing != null)
-                    Column(
-                      children: [
-                        if (wasteState.waste?.createdBy != null)
-                          Align(
-                            alignment: AlignmentGeometry.topLeft,
-                            child: Text(
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Colors.black54,
+                      DateSelector(
+                        selectedDate: selectedDate,
+                        onSelect: _handleDateChange,
+                      ),
+                      CustomDropdownField<TimingModel>(
+                        label: 'Select Meal Time',
+                        hint: 'Choose a meal time',
+                        items: baseInfo?.timings ?? [],
+                        value: _timing,
+                        getLabel: (meal) => meal.name,
+                        onChanged: baseInfo?.timings != null
+                            ? (val) {
+                                setState(() {
+                                  _timing = val;
+                                });
+                                _handleDateAndTimingChange();
+                              }
+                            : null,
+                      ),
+                      if (wasteState.isFetching)
+                        LoadingScreen()
+                      else if (_timing != null)
+                        Column(
+                          children: [
+                            if (wasteState.waste?.createdBy != null)
+                              Align(
+                                alignment: AlignmentGeometry.topLeft,
+                                child: Text(
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(color: Colors.black54),
+                                  'Last updated by ${wasteState.waste?.updatedBy}',
+                                ),
                               ),
-                              'Last updated by ${wasteState.waste?.updatedBy}',
+                            StudentCountSection(
+                              hostelTotals: {'Ilango': 120, 'Kamban': 90},
                             ),
-                          ),
-                        StudentCountSection(
-                          hostelTotals: {'Ilango': 120, 'Kamban': 90},
+                            WasteSection(
+                              coffeeWasteController: coffeeWasteController,
+                              selectedTiming: _timing,
+                              studentWasteController: studentWasteController,
+                              cookedWasteController: cookedWasteController,
+                              milkWasteController: milkWasteController,
+                            ),
+                            PrimaryButton(
+                              text: 'Save',
+                              onPressed:
+                                  (_timing != null && !wasteState.isCreating)
+                                  ? _handleWasteCreationOrUpdate
+                                  : null,
+                            ),
+                          ],
                         ),
-                        WasteSection(
-                          coffeeWasteController: coffeeWasteController,
-                          selectedTiming: _timing,
-                          studentWasteController: studentWasteController,
-                          cookedWasteController: cookedWasteController,
-                          milkWasteController: milkWasteController,
-                        ),
-                        PrimaryButton(
-                          text: 'Save',
-                          onPressed: (_timing != null && !wasteState.isCreating)
-                              ? _handleWasteCreationOrUpdate
-                              : null,
-                        ),
-                      ],
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
