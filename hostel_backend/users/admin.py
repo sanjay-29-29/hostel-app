@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from users.models import Role
+from users.models import HostelMembership, Role
 
 
 @admin.register(get_user_model())
@@ -11,7 +11,10 @@ class CustomUserAdmin(UserAdmin):
     list_display = ("email", "name", "is_staff")
     search_fields = ("first_name", "last_name", "email")
     fieldsets = (
-        (None, {"fields": ("email", "password", "role")}),
+        (
+            None,
+            {"fields": ("email", "password", "role")},
+        ),
         (("Personal info"), {"fields": ("name", "phone_number")}),
         (
             ("Permissions"),
@@ -46,4 +49,9 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(HostelMembership)
+class HostelMembershipAdmin(admin.ModelAdmin):
     pass

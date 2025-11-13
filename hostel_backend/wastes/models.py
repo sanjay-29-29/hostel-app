@@ -8,11 +8,11 @@ class Timing(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
 
 class Attendance(models.Model):
-    hostel = models.OneToOneField(to=Hostel, on_delete=models.CASCADE)
+    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
     students_present = models.IntegerField()
     students_absent = models.IntegerField()
 
@@ -20,13 +20,23 @@ class Attendance(models.Model):
         return self.hostel.name
 
 
+class Kitchen(models.Model):
+    name = models.CharField(max_length=10)
+    hostels = models.ManyToManyField(to=Hostel)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Waste(models.Model):
     date = models.DateField()
+
     coffe_waste = models.IntegerField(null=True)
     food_cooked_waste = models.IntegerField(null=True)
     student_waste = models.IntegerField(null=True)
-    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
     timing = models.ForeignKey(to=Timing, on_delete=models.CASCADE)
+
+    kitchen = models.ForeignKey(to=Kitchen, on_delete=models.CASCADE)
     attendances = models.ManyToManyField(to=Attendance, related_name="attendances")
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -40,7 +50,7 @@ class Waste(models.Model):
     )
 
     class Meta:
-        unique_together = ("hostel", "timing", "date")
+        unique_together = ("kitchen", "timing", "date")
 
     def __str__(self):
-        return f"{self.date} {self.hostel.name} {self.timing.name}"
+        return f"{self.date} {self.timing.name}"

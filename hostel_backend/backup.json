@@ -10,10 +10,9 @@
       "password": "pbkdf2_sha256$600000$8qmQLLD6m6IDnqdU7q424E$qLXB6ylt8dDs/z95LsB6eEM7rbCXkkjGACrHrFUYYxk=",
       "last_login": "2025-11-06T13:49:46.858Z",
       "email": "test@gmail.com",
-      "name": "",
-      "phone_number": "",
+      "name": "Sathiyaseelan S",
+      "phone_number": "123456789",
       "role": 4,
-      "hostel_id": 1,
       "is_new": true,
       "is_active": true,
       "is_staff": true,
@@ -23,13 +22,37 @@
       "user_permissions": []
     }
   },
-  { "model": "hostels.hostel", "pk": 1, "fields": { "name": "Ponnar" } },
-  { "model": "hostels.hostel", "pk": 2, "fields": { "name": "Shankar" } },
-  { "model": "hostels.hostel", "pk": 3, "fields": { "name": "Dheeran" } },
-  { "model": "hostels.hostel", "pk": 4, "fields": { "name": "Valluvar" } },
-  { "model": "wastes.timing", "pk": 1, "fields": { "name": "Breakfast" } },
+  {
+    "model": "hostels.hostel",
+    "pk": 1,
+    "fields": { "name": "Ponnar", "students_count": 123 }
+  },
+  {
+    "model": "hostels.hostel",
+    "pk": 2,
+    "fields": { "name": "Shankar", "students_count": 123 }
+  },
+  {
+    "model": "hostels.hostel",
+    "pk": 3,
+    "fields": { "name": "Dheeran", "students_count": 123 }
+  },
+  {
+    "model": "hostels.hostel",
+    "pk": 4,
+    "fields": { "name": "Valluvar", "students_count": 123 }
+  },
+  {
+    "model": "wastes.timing",
+    "pk": 1,
+    "fields": { "name": "Breakfast" }
+  },
   { "model": "wastes.timing", "pk": 2, "fields": { "name": "Lunch" } },
   { "model": "wastes.timing", "pk": 3, "fields": { "name": "Dinner" } },
-  { "model": "wastes.timing", "pk": 4, "fields": { "name": "Snacks" } }
+  { "model": "wastes.timing", "pk": 4, "fields": { "name": "Snacks" } },
+  {
+    "model": "wastes.kitchen",
+    "pk": 1,
+    "fields": { "name": "Ilango Kitchen", "hostels": [1, 2] }
+  }
 ]
-

@@ -4,16 +4,26 @@ from rest_framework import serializers
 
 from hostels.models import Hostel
 from hostels.serializers import HostelDropdownSerializer
-from users.models import Role
+from users.models import HostelMembership, Role
+from wastes.models import Kitchen
+from wastes.serializers import KitchenSerializer
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    hostel = serializers.PrimaryKeyRelatedField(queryset=Hostel.objects.all())
+    hostels = serializers.PrimaryKeyRelatedField(
+        queryset=Hostel.objects.all(), many=True
+    )
     role = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all())
 
     def create(self, validated_data):
+        hostels = validated_data.pop("hostels", [])
         user = get_user_model().objects.create_user(**validated_data)
+        hostel_memberships = []
+        hostel_memberships = [
+            HostelMembership(hostel=hostel, user=user) for hostel in hostels
+        ]
+        HostelMembership.objects.bulk_create(hostel_memberships)
         return user
 
     class Meta:
@@ -24,7 +34,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "password",
             "email",
             "role",
-            "hostel",
+            "hostels",
         ]
 
 
@@ -76,8 +86,9 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 
 class FetchAllUserSerializer(serializers.ModelSerializer):
-    hostel = HostelDropdownSerializer()
     role = RoleDropdownSerializer()
+    hostels = HostelDropdownSerializer(many=True)
+    kitchens = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -90,8 +101,15 @@ class FetchAllUserSerializer(serializers.ModelSerializer):
             "date_joined",
             "is_active",
             "is_new",
-            "hostel",
+            "kitchens",
+            "hostels",
         ]
+
+    def get_kitchens(self, obj):
+        """Get all kitchens associated with user through their hostels"""
+        kitchens = Kitchen.objects.filter(hostels__in=obj.hostels.all()).distinct()
+        serializer = KitchenSerializer(kitchens, many=True)
+        return serializer.data
 
     def get_role(self, obj):
         return obj.role.name

@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 import rest_framework.generics as rest_generics
@@ -13,8 +13,8 @@ from users.filters import UserFilter
 from users.models import Role
 from users.permissions import IsWarden
 import users.serializers as users_serializer
-from wastes.models import Timing
-from wastes.serializers import TimingSerializer
+from wastes.models import Kitchen, Timing
+from wastes.serializers import KitchenSerializer, TimingSerializer
 
 
 class UserLoginView(ObtainAuthToken):
@@ -43,10 +43,13 @@ class SearchAllUsersView(rest_generics.ListAPIView):
 
     permission_classes = []
     serializer_class = users_serializer.FetchAllUserSerializer
-    queryset = get_user_model().objects.all()
-
-    def get_queryset(self):
-        return super().get_queryset()
+    queryset = get_user_model().objects.prefetch_related(
+        Prefetch(
+            "hostels__kitchen_set",
+            queryset=Kitchen.objects.all(),
+            to_attr="kitchens",
+        )
+    )
 
 
 class CreateUpdateUserView(viewsets.ModelViewSet):
@@ -71,15 +74,18 @@ class CreateUserInfoGetView(APIView):
         hostels = Hostel.objects.all()
         roles = Role.objects.all()
         timings = Timing.objects.all()
+        kitchens = Kitchen.objects.all()
 
         hostel_data = HostelDropdownSerializer(hostels, many=True).data
         role_data = users_serializer.RoleDropdownSerializer(roles, many=True).data
         timing_data = TimingSerializer(timings, many=True).data
+        kitchen_data = KitchenSerializer(kitchens, many=True).data
 
         return Response(
             {
                 "roles": role_data,
-                "hostels": hostel_data,
+                # "hostels": hostel_data,
                 "timings": timing_data,
+                "kitchens": kitchen_data,
             }
         )

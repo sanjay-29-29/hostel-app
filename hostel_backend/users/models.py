@@ -18,7 +18,7 @@ class CustomUserManager(BaseUserManager):
         return (
             super()
             .select_related("role")
-            .prefetch_related("hostel")
+            .prefetch_related("hostels")
             .get(*args, **kwargs)
         )
 
@@ -59,7 +59,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ],
     )
     role = models.ForeignKey(to=Role, on_delete=models.CASCADE)
-    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
+    hostels = models.ManyToManyField(to=Hostel, through="HostelMembership")
     is_new = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -72,3 +72,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class HostelMembership(models.Model):
+    hostel = models.ForeignKey(to=Hostel, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=get_user_model(), on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.hostel.name + " " + self.user.name

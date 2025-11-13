@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Attendance, Waste, Timing
+from .models import Attendance, Kitchen, Waste, Timing
 
 
 @admin.register(Waste)
@@ -14,4 +14,9 @@ class TimingAdmin(admin.ModelAdmin):
 
 @admin.register(Attendance)
 class AttendanceAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Kitchen)
+class KitchenAdmin(admin.ModelAdmin):
     pass
