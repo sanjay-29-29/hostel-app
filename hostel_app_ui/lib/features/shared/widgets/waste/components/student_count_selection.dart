@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
+import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/widgets/waste/student_count_card.dart';
 
 class StudentCountSection extends StatefulWidget {
   /// Map of hostelName → totalStudents
-  final Map<String, int> hostelTotals;
+  final Map<HostelModel, int> absentCounts;
+  final List<HostelModel> hostels;
 
   const StudentCountSection({
     super.key,
-    required this.hostelTotals,
-  }) : assert(
-          hostelTotals.length == 1 || hostelTotals.length == 2,
-          'You can have only 1 or 2 hostels per kitchen.',
-        );
+    required this.hostels,
+    required this.absentCounts,
+  });
 
   @override
   State<StudentCountSection> createState() => _StudentCountSectionState();
@@ -20,7 +20,6 @@ class StudentCountSection extends StatefulWidget {
 
 class _StudentCountSectionState extends State<StudentCountSection> {
   final Map<String, TextEditingController> presentControllers = {};
-  final Map<String, int> absentCounts = {};
 
   int totalPresent = 0;
   int totalAbsent = 0;
@@ -28,11 +27,11 @@ class _StudentCountSectionState extends State<StudentCountSection> {
   @override
   void initState() {
     super.initState();
-    for (final hostelName in widget.hostelTotals.keys) {
+    for (final hostel in widget.hostels) {
       final controller = TextEditingController();
       controller.addListener(_recalculateTotals);
-      presentControllers[hostelName] = controller;
-      absentCounts[hostelName] = 0;
+      presentControllers[hostel.name] = controller;
+      widget.absentCounts[hostel] = hostel.studentsCount;
     }
   }
 
@@ -48,13 +47,13 @@ class _StudentCountSectionState extends State<StudentCountSection> {
     int totalPresentCalc = 0;
     int totalAbsentCalc = 0;
 
-    for (final entry in widget.hostelTotals.entries) {
-      final name = entry.key;
-      final total = entry.value;
+    for (final entry in widget.hostels) {
+      final name = entry.name;
+      final total = entry.studentsCount;
       final present = int.tryParse(presentControllers[name]!.text) ?? 0;
 
       final absent = (total - present).clamp(0, total);
-      absentCounts[name] = absent;
+      widget.absentCounts[entry] = absent;
 
       totalPresentCalc += present;
       totalAbsentCalc += absent;
@@ -68,7 +67,7 @@ class _StudentCountSectionState extends State<StudentCountSection> {
 
   @override
   Widget build(BuildContext context) {
-    final hostelEntries = widget.hostelTotals.entries.toList();
+    final hostelEntries = widget.hostels;
 
     return Container(
       padding: const EdgeInsets.all(15),
@@ -95,9 +94,9 @@ class _StudentCountSectionState extends State<StudentCountSection> {
           // Hostel-wise fields
           Column(
             children: hostelEntries.map((entry) {
-              final hostelName = entry.key;
-              final total = entry.value;
-              final absent = absentCounts[hostelName] ?? 0;
+              final hostelName = entry.name;
+              final total = entry.studentsCount;
+              final absent = widget.absentCounts[entry] ?? 0;
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -150,11 +149,13 @@ class _StudentCountSectionState extends State<StudentCountSection> {
   Widget _buildInfoBox(String label, String value) {
     return Column(
       children: [
-        Text(label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            )),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         Container(
           width: 60,
           alignment: Alignment.center,
@@ -176,7 +177,8 @@ class _StudentCountSectionState extends State<StudentCountSection> {
       backgroundColor: ColorConstants.primaryColor,
       label: Text(
         '$label: $value',
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }

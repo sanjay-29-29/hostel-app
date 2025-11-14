@@ -8,6 +8,9 @@ part of 'base_info_model.dart';
 
 BaseInfoModel _$BaseInfoModelFromJson(Map<String, dynamic> json) =>
     BaseInfoModel(
+      kitchens: (json['kitchens'] as List<dynamic>)
+          .map((e) => KitchenModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       hostels: (json['hostels'] as List<dynamic>)
           .map((e) => HostelModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -22,6 +25,7 @@ BaseInfoModel _$BaseInfoModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$BaseInfoModelToJson(BaseInfoModel instance) =>
     <String, dynamic>{
       'hostels': instance.hostels,
+      'kitchens': instance.kitchens,
       'roles': instance.roles,
       'timings': instance.timings,
     };

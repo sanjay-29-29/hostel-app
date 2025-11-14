@@ -8,7 +8,7 @@ class WasteModel {
 
   final DateTime date;
   final String timingName;
-  final String hostelName;
+  final String kitchenName;
 
   final String createdBy;
   final String updatedBy;
@@ -17,16 +17,16 @@ class WasteModel {
   final int? foodCookedWaste;
   final int? studentWaste;
 
-  final List<AttendanceModel> attendaces;
+  final List<AttendanceModel> attendances;
 
   const WasteModel({
     required this.id,
     required this.date,
     required this.timingName,
-    required this.hostelName,
+    required this.kitchenName,
     required this.createdBy,
     required this.updatedBy,
-    required this.attendaces,
+    required this.attendances,
     this.studentWaste,
     this.coffeWaste,
     this.foodCookedWaste,
@@ -40,11 +40,13 @@ class WasteModel {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class AttendanceModel {
+  final int hostelId;
   final String hostelName;
   final int studentsPresent;
   final int studentsAbsent;
 
   const AttendanceModel({
+    required this.hostelId,
     required this.hostelName,
     required this.studentsPresent,
     required this.studentsAbsent,

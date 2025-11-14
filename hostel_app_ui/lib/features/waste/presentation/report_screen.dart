@@ -9,6 +9,7 @@ import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
+import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/waste/components/report_date_selection.dart';
 
@@ -27,7 +28,7 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
   );
   DateTime toDate = DateTime.now();
 
-  HostelModel? _selectedHostel;
+  KitchenModel? _selectedHostel;
 
   File? _lastFile;
   bool _loading = false;
@@ -156,7 +157,6 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
   Widget build(BuildContext context) {
     final user = ref.watch(authNotifierProvider).user;
     final wastes = ref.watch(wasteManageNotifierProvider).wastes;
-
     final spotsStudentWaste = <FlSpot>[];
     final spotsFoodWaste = <FlSpot>[];
     final spotsCoffeeWaste = <FlSpot>[];

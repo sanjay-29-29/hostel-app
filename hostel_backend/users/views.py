@@ -84,7 +84,7 @@ class CreateUserInfoGetView(APIView):
         return Response(
             {
                 "roles": role_data,
-                # "hostels": hostel_data,
+                "hostels": hostel_data,
                 "timings": timing_data,
                 "kitchens": kitchen_data,
             }

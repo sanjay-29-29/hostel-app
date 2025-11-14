@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
+import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:hostel_app/features/waste/model/waste_create.dart';
@@ -107,7 +108,7 @@ class WasteManageNotifier extends Notifier<WasteManageState> {
   }
 
   Future<void> fetchWasteWithRange({
-    HostelModel? hostel,
+    KitchenModel? hostel,
     DateTime? start,
     DateTime? end,
   }) async {

@@ -5,6 +5,7 @@ import 'package:hostel_app/app/core/utils/loading.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
+import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
@@ -26,7 +27,9 @@ class WasteManageScreen extends ConsumerStatefulWidget {
 
 class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
   DateTime selectedDate = DateTime.now();
-  TimingModel? _timing;
+  Map<HostelModel, int> attendances = {};
+  Map<int, HostelModel> hostelIdMap = {};
+  TimingModel? timing;
 
   final coffeeWasteController = TextEditingController();
   final studentWasteController = TextEditingController();
@@ -37,6 +40,9 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
 
   @override
   void initState() {
+    widget.kitchen.hostels.map((hostel) {
+      hostelIdMap[hostel.id] = hostel;
+    });
     super.initState();
     _clearControllers();
   }
@@ -60,7 +66,7 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
   void _handleDateChange(DateTime d) {
     setState(() {
       selectedDate = d;
-      _timing = null;
+      timing = null;
     });
   }
 
@@ -70,11 +76,22 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
     if (wasteState.waste == null) {
       wasteNotifer.addWaste(
         WasteCreateModel(
-          timing: _timing!.id,
+          kitchen: widget.kitchen.id,
+          timing: timing!.id,
           coffeWaste: int.tryParse(coffeeWasteController.text),
           foodCookedWaste: int.tryParse(cookedWasteController.text),
           studentWaste: int.tryParse(studentWasteController.text),
           date: selectedDate,
+          attendances: attendances.entries
+              .map(
+                (val) => AttendanceCreateModel(
+                  hostelId: val.key.id,
+                  studentsAbsent: attendances[val.key] ?? 0,
+                  studentsPresent:
+                      val.key.studentsCount - attendances[val.key]!,
+                ),
+              )
+              .toList(),
         ),
       );
       return;
@@ -82,10 +99,20 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
     wasteNotifer.updateWaste(
       wasteState.waste!.id,
       WasteCreateModel(
-        timing: _timing!.id,
+        kitchen: widget.kitchen.id,
+        timing: timing!.id,
         coffeWaste: int.tryParse(coffeeWasteController.text),
         foodCookedWaste: int.tryParse(cookedWasteController.text),
         studentWaste: int.tryParse(studentWasteController.text),
+        attendances: attendances.entries
+            .map(
+              (val) => AttendanceCreateModel(
+                hostelId: val.key.id,
+                studentsAbsent: attendances[val.key] ?? 0,
+                studentsPresent: val.key.studentsCount - attendances[val.key]!,
+              ),
+            )
+            .toList(),
         date: selectedDate,
       ),
     );
@@ -97,16 +124,21 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
       cookedWasteController.text = waste.foodCookedWaste?.toString() ?? '';
       studentWasteController.text = waste.studentWaste?.toString() ?? '';
       milkWasteController.text = waste.coffeWaste?.toString() ?? '';
+      for (final attendance in waste.attendances) {
+        print(attendance);
+        attendances[hostelIdMap[attendance.hostelId]!] =
+            attendance.studentsAbsent;
+      }
     } else {
       _clearControllers();
     }
   }
 
   void _handleDateAndTimingChange() async {
-    if (_timing == null) return;
+    if (timing == null) return;
     await ref
         .read(wasteManageNotifierProvider.notifier)
-        .fetchWaste(selectedDate, _timing!);
+        .fetchWaste(selectedDate, timing!);
     _updateControllersFromWaste();
   }
 
@@ -151,12 +183,12 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                           label: 'Select Meal Time',
                           hint: 'Choose a meal time',
                           items: baseInfo?.timings ?? [],
-                          value: _timing,
+                          value: timing,
                           getLabel: (meal) => meal.name,
                           onChanged: baseInfo?.timings != null
                               ? (val) {
                                   setState(() {
-                                    _timing = val;
+                                    timing = val;
                                   });
                                   _handleDateAndTimingChange();
                                 }
@@ -191,7 +223,7 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                             ),
                           ),
                         )
-                      else if (_timing != null)
+                      else if (timing != null)
                         Column(
                           children: [
                             if (wasteState.waste?.createdBy != null)
@@ -204,11 +236,12 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                                 ),
                               ),
                             StudentCountSection(
-                              hostelTotals: {'Ilango': 120, 'Kamban': 90},
+                              hostels: widget.kitchen.hostels,
+                              absentCounts: attendances,
                             ),
                             WasteSection(
                               coffeeWasteController: coffeeWasteController,
-                              selectedTiming: _timing,
+                              selectedTiming: timing,
                               studentWasteController: studentWasteController,
                               cookedWasteController: cookedWasteController,
                               milkWasteController: milkWasteController,
@@ -216,7 +249,7 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                             PrimaryButton(
                               text: 'Save',
                               onPressed:
-                                  (_timing != null && !wasteState.isCreating)
+                                  (timing != null && !wasteState.isCreating)
                                       ? _handleWasteCreationOrUpdate
                                       : null,
                             ),

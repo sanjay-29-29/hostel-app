@@ -1,4 +1,3 @@
-import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,24 +5,21 @@ part 'waste_create.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class WasteCreateModel {
+  @JsonKey(toJson: _toJsonDate)
+  final DateTime date;
   final int? coffeWaste;
   final int? foodCookedWaste;
   final int? studentWaste;
-
-  //TODO: hostel_id for warden, when creating
-  final int? hostel;
-  final List<AttendanceModel>? attendances;
-
-  @JsonKey(toJson: _toJsonDate)
-  final DateTime date;
+  final int kitchen;
+  final List<AttendanceCreateModel> attendances;
   final int timing;
 
   const WasteCreateModel({
     this.coffeWaste,
     this.foodCookedWaste,
     this.studentWaste,
-    this.hostel,
-    this.attendances,
+    required this.attendances,
+    required this.kitchen,
     required this.timing,
     required this.date,
   });
@@ -35,4 +31,22 @@ class WasteCreateModel {
 
   static String _toJsonDate(DateTime date) =>
       DateFormat('yyyy-MM-dd').format(date);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AttendanceCreateModel {
+  int hostelId;
+  int studentsPresent;
+  int studentsAbsent;
+
+  AttendanceCreateModel({
+    required this.hostelId,
+    required this.studentsPresent,
+    required this.studentsAbsent,
+  });
+
+  factory AttendanceCreateModel.fromJson(Map<String, dynamic> json) =>
+      _$AttendanceCreateModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AttendanceCreateModelToJson(this);
 }
