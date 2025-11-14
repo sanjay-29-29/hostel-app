@@ -48,3 +48,25 @@ Map<String, dynamic> _$AttendanceModelToJson(AttendanceModel instance) =>
       'students_present': instance.studentsPresent,
       'students_absent': instance.studentsAbsent,
     };
+
+WasteModelCSV _$WasteModelCSVFromJson(Map<String, dynamic> json) =>
+    WasteModelCSV(
+      date: DateTime.parse(json['date'] as String),
+      session: json['session'] as String,
+      coffeWaste: (json['coffe_waste'] as num?)?.toDouble(),
+      foodCookedWaste: (json['food_cooked_waste'] as num?)?.toDouble(),
+      studentWaste: (json['student_waste'] as num?)?.toDouble(),
+      presentCount: (json['present_count'] as num).toInt(),
+      absentCount: (json['absent_count'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$WasteModelCSVToJson(WasteModelCSV instance) =>
+    <String, dynamic>{
+      'date': instance.date.toIso8601String(),
+      'session': instance.session,
+      'coffe_waste': instance.coffeWaste,
+      'food_cooked_waste': instance.foodCookedWaste,
+      'student_waste': instance.studentWaste,
+      'present_count': instance.presentCount,
+      'absent_count': instance.absentCount,
+    };

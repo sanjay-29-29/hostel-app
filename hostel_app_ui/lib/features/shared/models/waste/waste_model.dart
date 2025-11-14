@@ -55,3 +55,29 @@ class AttendanceModel {
 
   Map<String, dynamic> toJson() => _$AttendanceModelToJson(this);
 }
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class WasteModelCSV {
+  final DateTime date;
+  final String session;
+  final double? coffeWaste; 
+  final double? foodCookedWaste;
+  final double? studentWaste;
+  final int presentCount;
+  final int absentCount;
+
+  WasteModelCSV({
+    required this.date,
+    required this.session,
+    this.coffeWaste,
+    this.foodCookedWaste,
+    this.studentWaste,
+    required this.presentCount,
+    required this.absentCount,
+  });
+
+ factory WasteModelCSV.fromJson(Map<String, dynamic> json) =>
+      _$WasteModelCSVFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WasteModelCSVToJson(this);
+}

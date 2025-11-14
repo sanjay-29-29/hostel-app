@@ -36,6 +36,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Result<UserCreateInfoModel, Exception>> fetchUserCreateInfo() async {
     try {
       final response = await _dioClient.get(Endpoints.createInfo);
+      print(response.data);
       return Success(UserCreateInfoModel.fromJson(response.data));
     } on Exception catch (e) {
       return Failure(e);
