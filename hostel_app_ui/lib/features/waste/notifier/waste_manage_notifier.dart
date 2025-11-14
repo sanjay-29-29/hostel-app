@@ -60,7 +60,7 @@ class WasteManageNotifier extends Notifier<WasteManageState> {
   }
 
   Future<void> addWaste(WasteCreateModel waste) async {
-    state = state.copyWith(isCreating: true,isLoading: true);
+    state = state.copyWith(isCreating: true, isLoading: true);
     final response = await _repository.addWaste(waste);
     response.fold(
       onSuccess: (res) {
@@ -89,17 +89,21 @@ class WasteManageNotifier extends Notifier<WasteManageState> {
   }
 
   Future<void> fetchWaste(DateTime date, TimingModel timing) async {
-    state = state.copyWith(isFetching: true);
-    final response = await _repository.fetchSingleWaste(date, timing);
-    response.fold(
-      onSuccess: (waste) {
-        state = state.copyWith(waste: waste, isFetching: false);
-      },
-      onFailure: (error) {
-        state = state.clearWaste().copyWith(isFetching: false);
-      },
-    );
-    print(state.isFetching);
+    try {
+      state = state.copyWith(isFetching: true);
+      final response = await _repository.fetchSingleWaste(date, timing);
+      print('Responseeeeeeeeeeee$response');
+      response.fold(
+        onSuccess: (waste) {
+          state = state.copyWith(waste: waste, isFetching: false);
+        },
+        onFailure: (error) {
+          state = state.clearWaste().copyWith(isFetching: false);
+        },
+      );
+    } catch (e) {
+      state = state.clearWaste().copyWith(isFetching: false);
+    }
   }
 
   Future<void> fetchWasteWithRange({

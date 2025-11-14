@@ -4,6 +4,7 @@ import 'package:hostel_app/app/core/constants/color_constants.dart';
 import 'package:hostel_app/app/core/utils/loading.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
+import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
@@ -57,7 +58,6 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
   void _handleDateChange(DateTime d) {
     setState(() {
       selectedDate = d;
-      // resetting timing when date change
       _timing = null;
     });
   }
@@ -110,6 +110,14 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
     _updateControllersFromWaste();
   }
 
+  bool _isFutureDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final selected = DateTime(date.year, date.month, date.day);
+
+    return selected.isAfter(today);
+  }
+
   @override
   Widget build(BuildContext context) {
     final baseInfo = ref.watch(authNotifierProvider).baseInfo;
@@ -138,23 +146,51 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                         selectedDate: selectedDate,
                         onSelect: _handleDateChange,
                       ),
-                      CustomDropdownField<TimingModel>(
-                        label: 'Select Meal Time',
-                        hint: 'Choose a meal time',
-                        items: baseInfo?.timings ?? [],
-                        value: _timing,
-                        getLabel: (meal) => meal.name,
-                        onChanged: baseInfo?.timings != null
-                            ? (val) {
-                                setState(() {
-                                  _timing = val;
-                                });
-                                _handleDateAndTimingChange();
-                              }
-                            : null,
-                      ),
+                      if (!_isFutureDate(selectedDate))
+                        CustomDropdownField<TimingModel>(
+                          label: 'Select Meal Time',
+                          hint: 'Choose a meal time',
+                          items: baseInfo?.timings ?? [],
+                          value: _timing,
+                          getLabel: (meal) => meal.name,
+                          onChanged: baseInfo?.timings != null
+                              ? (val) {
+                                  setState(() {
+                                    _timing = val;
+                                  });
+                                  _handleDateAndTimingChange();
+                                }
+                              : null,
+                        ),
                       if (wasteState.isFetching)
                         LoadingScreen()
+                      else if (_isFutureDate(selectedDate))
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ResponsiveText(
+                                  'That\’s too far ahead!',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ResponsiveText(
+                                  'Try selecting a recent date.',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                       else if (_timing != null)
                         Column(
                           children: [

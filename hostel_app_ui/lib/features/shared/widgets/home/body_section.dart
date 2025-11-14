@@ -73,47 +73,38 @@ class HomeBody extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuCard(
-    BuildContext context, {
-    required String imagePath,
-    required String title1,
-    required String title2,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: onTap,
-      child: Container(
-        color: Colors.redAccent,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/icons/food.svg',
-              width: 100,
-              height: 100,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 10),
-            ResponsiveText(
-              title1,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                letterSpacing: 1.2,
-              ),
-            ),
-            ResponsiveText(
-              title2,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                letterSpacing: 1.2,
-              ),
-            ),
-          ],
+Widget _buildMenuCard(
+  BuildContext context, {
+  required String imagePath,
+  required String title1,
+  required String title2,
+  required VoidCallback onTap,
+}) {
+
+  return InkWell(
+    borderRadius: BorderRadius.circular(20),
+    onTap: onTap,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          imagePath,
+          width: 100,
+          height: 100,
+          placeholderBuilder: (context) => SizedBox(
+            width: 100,
+            height: 100,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          ),
+          semanticsLabel: '$title1 $title2',
         ),
-      ),
-    );
-  }
+        const SizedBox(height: 10),
+        ResponsiveText(title1, style: const TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 15, letterSpacing: 1.2)),
+        ResponsiveText(title2, style: const TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 15, letterSpacing: 1.2)),
+      ],
+    ),
+  );
+}
 }
