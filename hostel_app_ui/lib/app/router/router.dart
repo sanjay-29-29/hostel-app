@@ -55,7 +55,12 @@ final router = GoRouter(
     GoRoute(
       path: RouteConstants.wasteManage,
       name: RouteConstantsNames.wasteManage,
-      builder: (context, state) => const WasteManageScreen(),
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+        return WasteManageScreen(
+          kitchen: data['kitchen'],
+        );
+      },
     ),
     GoRoute(
       path: RouteConstants.reportView,

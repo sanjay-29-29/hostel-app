@@ -36,9 +36,8 @@ class MemberList extends StatelessWidget {
         itemBuilder: (context, index) {
           final user = users[index];
           final name = user.name;
-          final firstLetter = name.isNotEmpty
-              ? name.trim()[0].toUpperCase()
-              : '?';
+          final firstLetter =
+              name.isNotEmpty ? name.trim()[0].toUpperCase() : '?';
 
           return InkWell(
             onTap: () {
@@ -70,7 +69,7 @@ class MemberList extends StatelessWidget {
                 ),
               ),
               subtitle: ResponsiveText(
-                '${user.role.name} - ${user.hostel.name}',
+                '${user.role.name} - ${user.hostels.map((h) => h.name).join(", ")}',
                 style: const TextStyle(color: Color(0xFF686868), fontSize: 14),
               ),
               trailing: Container(

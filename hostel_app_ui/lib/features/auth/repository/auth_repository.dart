@@ -30,6 +30,7 @@ class AuthRepositoryImpl extends AuthRepository {
         Endpoints.login,
         data: {'username': username, 'password': password},
       );
+      print(response.data);
       return Success(
         (
           UserModel.fromJson(response.data),

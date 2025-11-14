@@ -4,28 +4,29 @@ part 'waste_model.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class WasteModel {
-  int id;
+  final int id;
 
-  DateTime date;
-  int studentsPresent;
-  String timingName;
-  String hostelName;
+  final DateTime date;
+  final String timingName;
+  final String hostelName;
 
-  String createdBy;
-  String updatedBy;
+  final String createdBy;
+  final String updatedBy;
 
-  int? coffeWaste;
-  int? foodCookedWaste;
-  int? studentWaste;
+  final int? coffeWaste;
+  final int? foodCookedWaste;
+  final int? studentWaste;
 
-  WasteModel({
+  final List<AttendanceModel> attendaces;
+
+  const WasteModel({
     required this.id,
     required this.date,
-    required this.studentsPresent,
     required this.timingName,
     required this.hostelName,
     required this.createdBy,
     required this.updatedBy,
+    required this.attendaces,
     this.studentWaste,
     this.coffeWaste,
     this.foodCookedWaste,
@@ -35,4 +36,22 @@ class WasteModel {
       _$WasteModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$WasteModelToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AttendanceModel {
+  final String hostelName;
+  final int studentsPresent;
+  final int studentsAbsent;
+
+  const AttendanceModel({
+    required this.hostelName,
+    required this.studentsPresent,
+    required this.studentsAbsent,
+  });
+
+  factory AttendanceModel.fromJson(Map<String, dynamic> json) =>
+      _$AttendanceModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AttendanceModelToJson(this);
 }

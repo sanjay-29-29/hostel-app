@@ -72,7 +72,7 @@ class AuthNotifier extends Notifier<AuthState> {
       },
       onFailure: (error) {},
     );
-    print(response.isSuccess);
+    print(response);
   }
 
   Future<void> login(String username, String password) async {

@@ -84,7 +84,7 @@ class HomeHeader extends ConsumerWidget {
                     ),
                   ),
                   ResponsiveText(
-                    '${user.role.name} - ${user.hostel.name}',
+                    '${user.role.name} - ${user.hostels.map((h) => h.name).join(", ")}',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.black45,

@@ -1,4 +1,5 @@
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
+import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/role/role_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,7 +12,8 @@ class UserModel {
   String name;
   String phoneNumber;
   RoleModel role;
-  HostelModel hostel;
+  List<HostelModel> hostels;
+  List<KitchenModel> kitchens;
   String dateJoined;
   bool isActive;
   bool isNew;
@@ -22,7 +24,8 @@ class UserModel {
     required this.email,
     required this.dateJoined,
     required this.role,
-    required this.hostel,
+    required this.hostels,
+    required this.kitchens,
     required this.phoneNumber,
     required this.isActive,
     required this.isNew,

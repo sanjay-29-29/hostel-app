@@ -5,6 +5,7 @@ import 'package:hostel_app/app/core/utils/loading.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_sizedbox.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
+import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/widgets/forms/custom_dropdown_field.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
@@ -16,7 +17,8 @@ import 'package:hostel_app/features/shared/widgets/waste/date_selector.dart';
 import 'package:hostel_app/features/waste/model/waste_create.dart';
 
 class WasteManageScreen extends ConsumerStatefulWidget {
-  const WasteManageScreen({super.key});
+  final KitchenModel kitchen;
+  const WasteManageScreen({super.key, required this.kitchen});
 
   @override
   ConsumerState<WasteManageScreen> createState() => _WasteManageScreenState();
@@ -73,7 +75,6 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
           foodCookedWaste: int.tryParse(cookedWasteController.text),
           studentWaste: int.tryParse(studentWasteController.text),
           date: selectedDate,
-          studentsPresent: 120,
         ),
       );
       return;
@@ -86,7 +87,6 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
         foodCookedWaste: int.tryParse(cookedWasteController.text),
         studentWaste: int.tryParse(studentWasteController.text),
         date: selectedDate,
-        studentsPresent: 120,
       ),
     );
   }
@@ -217,8 +217,8 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                               text: 'Save',
                               onPressed:
                                   (_timing != null && !wasteState.isCreating)
-                                  ? _handleWasteCreationOrUpdate
-                                  : null,
+                                      ? _handleWasteCreationOrUpdate
+                                      : null,
                             ),
                           ],
                         ),

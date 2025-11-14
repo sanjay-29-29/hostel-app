@@ -30,8 +30,8 @@ class WasteViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
-        # if request.data.get("hostel") is not None:
-        # del request.data["hostel"]
+        # if request.data.get("kitchen") is not None:
+            # del request.data["kitchen"]
         return super().update(request, *args, **kwargs)
 
     def perform_create(self, serializer):

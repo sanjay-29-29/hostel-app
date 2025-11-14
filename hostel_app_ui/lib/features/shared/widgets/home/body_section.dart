@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hostel_app/app/core/constants/assets_constants.dart';
+import 'package:hostel_app/app/core/constants/image_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
@@ -25,7 +26,10 @@ class HomeBody extends StatelessWidget {
             title1: 'FOOD',
             title2: 'MANAGEMENT',
             onTap: () {
-              router.pushNamed(RouteConstantsNames.wasteManage);
+              router.pushNamed(
+                RouteConstantsNames.wasteManage,
+                extra: {'kitchen': user.kitchens[0]},
+              );
             },
           ),
           _buildMenuCard(

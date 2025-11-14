@@ -63,14 +63,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
     }
 
-    if (hostels != null) {
-      try {
-        final match = hostels.firstWhere((h) => h.id == widget.user.hostel.id);
-        selectedHostel = match;
-      } catch (_) {
-        selectedHostel = null;
-      }
-    }
+    // if (hostels != null) {
+    //   try {
+    //     final match = hostels.firstWhere((h) => h.id == widget.user.hostel.id);
+    //     selectedHostel = match;
+    //   } catch (_) {
+    //     selectedHostel = null;
+    //   }
+    // }
 
     if (mounted) setState(() {});
   }
@@ -94,9 +94,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
 
     try {
-      await ref
-          .read(addUserNotifierProvider.notifier)
-          .UpdateUser(
+      await ref.read(addUserNotifierProvider.notifier).UpdateUser(
             UpdateUserModel(
               id: widget.user.id,
               isNew: false,
@@ -180,9 +178,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 16),
-
                         FormCard(
                           children: [
                             CustomDropdownField<HostelModel>(
@@ -202,7 +198,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                 return null;
                               },
                             ),
-
                             CustomDropdownField<RoleModel>(
                               getLabel: (RoleModel role) => role.name,
                               label: 'ROLE',
@@ -222,9 +217,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 24),
-
                         FormCard(
                           children: [
                             CustomTextField(
@@ -279,7 +272,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
               ],
             ),
-
             if (addUserState.isLoading)
               const Opacity(
                 opacity: 0.6,

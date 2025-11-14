@@ -1,3 +1,4 @@
+import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,19 +12,19 @@ class WasteCreateModel {
 
   //TODO: hostel_id for warden, when creating
   final int? hostel;
+  final List<AttendanceModel>? attendances;
 
   @JsonKey(toJson: _toJsonDate)
   final DateTime date;
   final int timing;
-  final int studentsPresent;
 
   const WasteCreateModel({
     this.coffeWaste,
     this.foodCookedWaste,
     this.studentWaste,
     this.hostel,
+    this.attendances,
     required this.timing,
-    required this.studentsPresent,
     required this.date,
   });
 
