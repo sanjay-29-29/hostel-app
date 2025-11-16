@@ -66,14 +66,14 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       children: [
                         FormCard(
                           children: [
-                            // CustomTextField(
-                            //   label: 'HOSTEL NAME',
-                            //   hint: '',
-                            //   controller: TextEditingController(
-                            //     text: user.hostel.name,
-                            //   ),
-                            //   canEdit: false,
-                            // ),
+                            CustomTextField(
+                              label: 'HOSTEL NAME',
+                              hint: '',
+                              controller: TextEditingController(
+                                text: user.hostels.first.name,
+                              ),
+                              canEdit: false,
+                            ),
                             CustomTextField(
                               label: 'ROLE',
                               hint: '',

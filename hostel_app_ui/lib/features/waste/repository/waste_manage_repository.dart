@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
 import 'package:hostel_app/app/core/result/result.dart';
 import 'package:hostel_app/features/shared/models/error/backend_error_model.dart';
-import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/models/waste/waste_model.dart';

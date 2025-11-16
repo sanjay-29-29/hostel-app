@@ -63,14 +63,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
     }
 
-    // if (hostels != null) {
-    //   try {
-    //     final match = hostels.firstWhere((h) => h.id == widget.user.hostel.id);
-    //     selectedHostel = match;
-    //   } catch (_) {
-    //     selectedHostel = null;
-    //   }
-    // }
+    if (hostels != null) {
+      try {
+        final match = hostels.firstWhere((h) => h.id == widget.user.hostels.first.id);
+        selectedHostel = match;
+      } catch (_) {
+        selectedHostel = null;
+      }
+    }
 
     if (mounted) setState(() {});
   }

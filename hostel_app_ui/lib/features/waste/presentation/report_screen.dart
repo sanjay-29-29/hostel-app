@@ -4,11 +4,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/color_constants.dart';
-import 'package:hostel_app/app/core/utils/csv_exporter.dart';
+import 'package:hostel_app/app/core/utils/xlxs_exporter.dart';
 import 'package:hostel_app/app/core/utils/toast_utils.dart';
 import 'package:hostel_app/app/provider/app_provider.dart';
-import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
-import 'package:hostel_app/features/shared/models/waste/waste_model.dart';
 import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/widgets/header_section.dart';
 import 'package:hostel_app/features/shared/widgets/waste/components/report_date_selection.dart';
@@ -44,45 +42,6 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
         );
   }
 
-  final mockWastes = [
-    WasteModelCSV(
-      date: DateTime(2025, 01, 10),
-      session: 'Breakfast',
-      coffeWaste: 1.2, // Liters
-      studentWaste: 2.5, // Kg
-      foodCookedWaste: 5.0, // Kg
-      presentCount: 45,
-      absentCount: 5,
-    ),
-    WasteModelCSV(
-      date: DateTime(2025, 01, 10),
-      session: 'Lunch',
-      coffeWaste: 0.0,
-      studentWaste: 3.1,
-      foodCookedWaste: 6.0,
-      presentCount: 48,
-      absentCount: 2,
-    ),
-    WasteModelCSV(
-      date: DateTime(2025, 01, 10),
-      session: 'Snacks',
-      coffeWaste: 0.5,
-      studentWaste: 1.6,
-      foodCookedWaste: 2.5,
-      presentCount: 42,
-      absentCount: 8,
-    ),
-    WasteModelCSV(
-      date: DateTime(2025, 01, 10),
-      session: 'Dinner',
-      coffeWaste: 0.0,
-      studentWaste: 2.7,
-      foodCookedWaste: 5.2,
-      presentCount: 44,
-      absentCount: 6,
-    ),
-  ];
-
   Future<void> _exportCsv() async {
     if (_selectedHostel == null) {
       ToastHelper.showInfo('Select hostel & dates first');
@@ -91,12 +50,12 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
 
     setState(() => _loading = true);
     try {
-      final f = await CsvExporter.exportWasteData(
+      final f = await ExcelExporter.exportXlsx(
         collegeName: 'KEC',
         hostelName: _selectedHostel!.name,
         from: fromDate,
         to: toDate,
-        wastes: mockWastes,
+        reports: ref.read(wasteManageNotifierProvider).wastes ?? [],
       );
       setState(() => _lastFile = f);
       ToastHelper.showSuccess('Exported CSV: ${f.path}');
@@ -114,7 +73,7 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
     }
     setState(() => _loading = true);
     try {
-      await CsvExporter.viewFile(_lastFile!);
+      await ExcelExporter.viewFile(_lastFile!);
     } catch (e) {
       ToastHelper.showError('Open failed: $e');
     } finally {
@@ -129,7 +88,7 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
     }
     setState(() => _loading = true);
     try {
-      await CsvExporter.shareFile(_lastFile!, text: 'Hostel waste report');
+      await ExcelExporter.shareFile(_lastFile!, text: 'Hostel waste report');
     } catch (e) {
       ToastHelper.showError('Share failed: $e');
     } finally {
@@ -144,7 +103,7 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
     }
     setState(() => _loading = true);
     try {
-      final dest = await CsvExporter.downloadToDownloads(_lastFile!);
+      final dest = await ExcelExporter.downloadToDownloads(_lastFile!);
       ToastHelper.showSuccess('Saved to: ${dest.path}');
     } catch (e) {
       ToastHelper.showError('Download failed: $e');
@@ -225,16 +184,16 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  DropdownMenu<HostelModel>(
-                    onSelected: (hostel) {
+                  DropdownMenu<KitchenModel>(
+                    onSelected: (kitchen) {
                       setState(() {
-                        _selectedHostel = hostel;
+                        _selectedHostel = kitchen;
                       });
                       handleFetchData();
                     },
-                    dropdownMenuEntries: user!.hostels
+                    dropdownMenuEntries: user!.kitchens
                         .map(
-                          (val) => DropdownMenuEntry<HostelModel>(
+                          (val) => DropdownMenuEntry<KitchenModel>(
                             value: val,
                             label: val.name,
                           ),
@@ -242,45 +201,53 @@ class _ReportViewScreenState extends ConsumerState<ReportViewScreen> {
                         .toList(),
                   ),
                   const SizedBox(height: 12),
+                  if (wastes != null)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _loading ? null : _exportCsv,
+                          icon: _loading
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.download),
+                          label: const Text('Export CSV'),
+                        ),
+                        const SizedBox(width: 12),
 
-                  // Export + action buttons row
-                  Row(
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _loading ? null : _exportCsv,
-                        icon: _loading
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.download),
-                        label: const Text('Export CSV'),
-                      ),
-                      const SizedBox(width: 12),
+                        if (_lastFile != null) ...[
+                          IconButton(
+                            onPressed: (_lastFile != null && !_loading)
+                                ? _viewCsv
+                                : null,
+                            icon: const Icon(Icons.visibility),
+                            tooltip: 'View exported CSV',
+                          ),
 
-                      // View button
-                      IconButton(
-                        onPressed: (_lastFile != null && !_loading) ? _viewCsv : null,
-                        icon: const Icon(Icons.visibility),
-                        tooltip: 'View exported CSV',
-                      ),
+                          IconButton(
+                            onPressed: (_lastFile != null && !_loading)
+                                ? _shareCsv
+                                : null,
+                            icon: const Icon(Icons.share),
+                            tooltip: 'Share exported CSV',
+                          ),
 
-                      // Share button
-                      IconButton(
-                        onPressed: (_lastFile != null && !_loading) ? _shareCsv : null,
-                        icon: const Icon(Icons.share),
-                        tooltip: 'Share exported CSV',
-                      ),
-
-                      // Download button
-                      IconButton(
-                        onPressed: (_lastFile != null && !_loading) ? _downloadCsv : null,
-                        icon: const Icon(Icons.file_download),
-                        tooltip: 'Save to Downloads',
-                      ),
-                    ],
-                  ),
+                          IconButton(
+                            onPressed: (_lastFile != null && !_loading)
+                                ? _downloadCsv
+                                : null,
+                            icon: const Icon(Icons.file_download),
+                            tooltip: 'Save to Downloads',
+                          ),
+                        ],
+                      ],
+                    ),
 
                   const SizedBox(height: 16),
 
