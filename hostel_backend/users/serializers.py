@@ -113,3 +113,7 @@ class FetchAllUserSerializer(serializers.ModelSerializer):
 
     def get_role(self, obj):
         return obj.role.name
+
+
+class UserPassswordResetSerilizer(serializers.Serializer):
+    email = serializers.EmailField()

@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
 from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 import rest_framework.generics as rest_generics
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework import status
 from rest_framework.views import APIView
 
 from hostels.models import Hostel
@@ -89,3 +91,36 @@ class CreateUserInfoGetView(APIView):
                 "kitchens": kitchen_data,
             }
         )
+
+class PasswordResetOTPView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        # Expecting email as a query param: ?email=you@example.com
+        serializer = users_serializer.UserPassswordResetSerilizer(
+            data=request.query_params
+        )
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data.get("email")
+
+        User = get_user_model()
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User with provided email not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # TODO: generate OTP and send email to `email`
+        # send_mail(
+        #     "Password Reset",
+        #     "",
+        #     "from@example.com",
+        #     [email],
+        #     fail_silently=False,
+        # )
+
+        return Response({"detail": "Password reset OTP sent."}, status=status.HTTP_200_OK)

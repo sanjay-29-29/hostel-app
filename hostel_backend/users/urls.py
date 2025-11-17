@@ -15,6 +15,7 @@ urlpatterns = [
             [
                 path("all/", users_views.SearchAllUsersView.as_view()),
                 path("create-info/", users_views.CreateUserInfoGetView.as_view()),
+                path("forgot-password/", users_views.PasswordResetOTPView.as_view())
             ]
         ),
     ),
