@@ -9,6 +9,7 @@ from django.contrib.auth.models import (
 from django.db import models
 from django.db.transaction import on_commit
 from django.utils import timezone
+from datetime import timedelta
 
 from hostels.models import Hostel
 
@@ -80,3 +81,24 @@ class HostelMembership(models.Model):
 
     def __str__(self):
         return self.hostel.name + " " + self.user.name
+
+
+class PasswordResetOTP(models.Model):
+    email = models.EmailField()
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            # OTP expires in 10 minutes
+            self.expires_at = timezone.now() + timedelta(minutes=10)
+        super().save(*args, **kwargs)
+
+    def is_valid(self):
+        """Check if OTP is still valid (not expired and not used)"""
+        return not self.is_used and timezone.now() < self.expires_at
+
+    def __str__(self):
+        return f"OTP for {self.email}"

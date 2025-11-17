@@ -8,11 +8,12 @@ from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import status
 from rest_framework.views import APIView
+import random
 
 from hostels.models import Hostel
 from hostels.serializers import HostelDropdownSerializer
 from users.filters import UserFilter
-from users.models import Role
+from users.models import Role, PasswordResetOTP
 from users.permissions import IsWarden
 import users.serializers as users_serializer
 from wastes.models import Kitchen, Timing
@@ -92,6 +93,7 @@ class CreateUserInfoGetView(APIView):
             }
         )
 
+
 class PasswordResetOTPView(APIView):
     authentication_classes = []
     permission_classes = []
@@ -114,13 +116,21 @@ class PasswordResetOTPView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # TODO: generate OTP and send email to `email`
-        # send_mail(
-        #     "Password Reset",
-        #     "",
-        #     "from@example.com",
-        #     [email],
-        #     fail_silently=False,
-        # )
+        # Generate 6-digit OTP
+        otp = str(random.randint(100000, 999999))
 
-        return Response({"detail": "Password reset OTP sent."}, status=status.HTTP_200_OK)
+        # Save OTP to database
+        PasswordResetOTP.objects.create(email=email, otp=otp)
+
+        # Send email with OTP
+        send_mail(
+            subject="Password Reset OTP",
+            message=f"Your password reset OTP is: {otp}\n\nThis OTP will expire in 10 minutes.",
+            from_email="noreply@hostelapp.com",
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
+        return Response(
+            {"detail": "Password reset OTP sent."}, status=status.HTTP_200_OK
+        )

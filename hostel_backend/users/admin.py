@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from users.models import HostelMembership, Role
+from users.models import HostelMembership, Role, PasswordResetOTP
 
 
 @admin.register(get_user_model())
@@ -55,3 +55,11 @@ class RoleAdmin(admin.ModelAdmin):
 @admin.register(HostelMembership)
 class HostelMembershipAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(PasswordResetOTP)
+class PasswordResetOTPAdmin(admin.ModelAdmin):
+    list_display = ("email", "otp", "created_at", "expires_at", "is_used", "is_valid")
+    list_filter = ("is_used", "created_at")
+    search_fields = ("email",)
+    readonly_fields = ("created_at",)
