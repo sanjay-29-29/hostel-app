@@ -113,3 +113,31 @@ class FetchAllUserSerializer(serializers.ModelSerializer):
 
     def get_role(self, obj):
         return obj.role.name
+
+
+class OTPRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class OTPValidateSerializer(OTPRequestSerializer):
+    otp = serializers.IntegerField()
+
+class UserPasswordResetSerializer(serializers.Serializer):
+    otp = serializers.IntegerField()
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+    email = serializers.EmailField()
+
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        new_password = validated_data.get("new_password")
+        confirm_password = validated_data.get("confirm_password")
+
+        if new_password != confirm_password:
+            raise serializers.ValidationError(
+                {"confirm_password": "Passwords do not match."}
+            )
+
+        validate_password(new_password)
+
+        return validated_data

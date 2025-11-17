@@ -80,3 +80,13 @@ class HostelMembership(models.Model):
 
     def __str__(self):
         return self.hostel.name + " " + self.user.name
+
+
+class OTP(models.Model):
+    user = models.ForeignKey(to=get_user_model(), on_delete=models.CASCADE)
+    code = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OTP for {self.user.email} - {self.code}"

@@ -11,7 +11,8 @@ from wastes.models import Attendance, Kitchen, Timing, Waste
 class AttendanceSerializer(serializers.ModelSerializer):
     hostel_name = serializers.CharField(source="hostel.name", read_only=True)
     hostel_id = serializers.PrimaryKeyRelatedField(
-        source="hostel", queryset=Hostel.objects.all(),
+        source="hostel",
+        queryset=Hostel.objects.all(),
     )
 
     class Meta:
