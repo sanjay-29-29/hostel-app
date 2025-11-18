@@ -7,6 +7,7 @@ class WasteInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool showLiters;
   final double conversionFactor;
+  final bool editable;
 
   const WasteInputField({
     super.key,
@@ -14,6 +15,7 @@ class WasteInputField extends StatelessWidget {
     required this.controller,
     this.showLiters = false,
     this.conversionFactor = 0.97,
+    this.editable = true,
   });
 
   double _getLiters() {
@@ -55,6 +57,7 @@ class WasteInputField extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                   keyboardType: TextInputType.number,
+                  enabled: editable,
                 ),
               ),
               if (showLiters) ...[

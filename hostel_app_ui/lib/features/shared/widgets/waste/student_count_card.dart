@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class StudentCountCard extends StatelessWidget {
   final String label;
   final TextEditingController controller;
+  final bool enabled;
 
   const StudentCountCard({
     super.key,
     required this.label,
     required this.controller,
+    required this.enabled,
   });
 
   @override
@@ -27,6 +29,7 @@ class StudentCountCard extends StatelessWidget {
         ),
         filled: true,
         fillColor: Colors.white,
+        enabled: enabled
       ),
     );
   }

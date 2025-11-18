@@ -8,6 +8,7 @@ class WasteSection extends StatelessWidget {
   final TextEditingController studentWasteController;
   final TextEditingController cookedWasteController;
   final TextEditingController milkWasteController;
+  final bool editable;
 
   const WasteSection({
     super.key,
@@ -16,6 +17,7 @@ class WasteSection extends StatelessWidget {
     required this.cookedWasteController,
     required this.milkWasteController,
     this.selectedTiming,
+    this.editable = true,
   });
 
   @override
@@ -43,12 +45,14 @@ class WasteSection extends StatelessWidget {
         WasteInputField(
           label: 'Student Waste',
           controller: studentWasteController,
+          editable: editable,
         ),
       );
       fields.add(
         WasteInputField(
           label: 'Food Cooked Waste',
           controller: cookedWasteController,
+          editable: editable,
         ),
       );
     }
@@ -61,6 +65,7 @@ class WasteSection extends StatelessWidget {
       label: 'Coffee & Milk Waste',
       controller: coffeeWasteController,
       showLiters: true,
+      editable: editable,
     );
   }
 }

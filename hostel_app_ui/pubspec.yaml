@@ -29,6 +29,9 @@ dependencies:
   open_file: 
   share_plus:
   permission_handler:
+  firebase_core:
+  firebase_messaging: 
+  flutter_local_notifications: 
 
 dev_dependencies:
   flutter_test:
