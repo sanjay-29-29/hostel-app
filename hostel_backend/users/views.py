@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 import rest_framework.generics as rest_generics
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
@@ -78,11 +79,16 @@ class CreateUpdateUserView(viewsets.ModelViewSet):
 
 class CreateUserInfoGetView(APIView):
 
-    authentication_classes = []
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
+
+    def get_hostels(self):
+        user = self.request.user
+        if user.role == "Admin":
+            return Hostel.objects.all()
+        return user.hostels.all()
 
     def get(self, request, *args, **kargs):
-        hostels = Hostel.objects.all()
+        hostels = self.get_hostels()
         roles = Role.objects.all()
         timings = Timing.objects.all()
         kitchens = Kitchen.objects.all()

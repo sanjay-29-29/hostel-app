@@ -25,6 +25,7 @@ urlpatterns = [
         include(
             [
                 path("wastes/", include("wastes.urls")),
+                path("hostels/", include("hostels.urls")),
                 path("", include("users.urls")),
             ]
         ),
