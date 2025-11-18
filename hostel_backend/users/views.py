@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth import get_user_model
 from django.db.models import Prefetch
 from rest_framework import viewsets
@@ -10,7 +11,7 @@ from rest_framework.views import APIView
 from hostels.models import Hostel
 from hostels.serializers import HostelDropdownSerializer
 from users.filters import UserFilter
-from users.models import Role
+from users.models import OTP, Role
 from users.permissions import IsWarden
 import users.serializers as users_serializer
 from wastes.models import Kitchen, Timing
@@ -88,4 +89,106 @@ class CreateUserInfoGetView(APIView):
                 "timings": timing_data,
                 "kitchens": kitchen_data,
             }
+        )
+
+
+class PasswordResetOTPView(APIView):
+
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, *args, **kwargs):
+        serializer = users_serializer.OTPRequestSerializer(
+            data=request.query_params
+        )
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data.get("email")
+        User = get_user_model()
+
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User with provided email not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        
+        OTP.objects.filter(user=user, is_used=False).update(is_used=True)
+        otp_code = random.randint(100000, 999999)
+        OTP.objects.create(user=user, code=otp_code)
+
+        return Response(
+            {"detail": "Password reset OTP sent."}, status=status.HTTP_200_OK
+        )
+
+    def post(self, request, *args, **kwargs):
+        serializer = users_serializer.UserPasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data.get("email")
+        code = serializer.validated_data.get("otp")
+
+        data = OTPValidateView.validate_otp(
+            email,
+            code
+        )
+
+        if isinstance(data, Response):
+            return data
+
+        user, otp = data
+
+        user.set_password(serializer.validated_data.get("new_password"))
+        user.save()
+
+        otp.is_used = True
+        otp.save()
+
+        return Response(
+            {"detail": "Password has been reset successfully."},
+            status=status.HTTP_200_OK,
+        )
+
+class OTPValidateView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    @staticmethod
+    def validate_otp(email, otp):
+        User = get_user_model()
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User with provided email not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            otp = OTP.objects.get(user=user, code=otp, is_used=False)
+        except OTP.DoesNotExist:
+            return Response(
+                {"detail": "Invalid or used OTP."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return user, otp
+
+    def post(self, request, *args, **kwargs):
+        serializer = users_serializer.OTPValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data.get("email")
+        otp = serializer.validated_data.get("otp")
+
+        is_valid = OTPValidateView.validate_otp(email, otp)
+ 
+        if isinstance(is_valid, Response):
+            return is_valid
+
+        return Response(
+            {"detail": "OTP is valid."},
+            status=status.HTTP_200_OK,
         )
