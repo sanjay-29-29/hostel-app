@@ -21,11 +21,11 @@ class OTPVerificationScreen extends ConsumerStatefulWidget {
 
 class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
   final List<TextEditingController> _otpControllers = List.generate(
-    4,
+    6,
     (_) => TextEditingController(),
   );
 
-  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   final _formKey = GlobalKey<FormState>();
 
@@ -56,7 +56,7 @@ class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
-    // final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
 
     // ignore: deprecated_member_use
     return WillPopScope(
@@ -88,9 +88,9 @@ class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(4, (index) {
+                      children: List.generate(6, (index) {
                         return SizedBox(
-                          width: 60,
+                          width: 40,
                           child: TextFormField(
                             controller: _otpControllers[index],
                             focusNode: _focusNodes[index],
@@ -125,8 +125,8 @@ class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
                               } else if (value.isEmpty) {
                                 if (index - 1 >= 0) {
                                   _focusNodes[index - 1].requestFocus();
-                                  _otpControllers[index - 1]
-                                      .selection = TextSelection.collapsed(
+                                  _otpControllers[index - 1].selection =
+                                      TextSelection.collapsed(
                                     offset:
                                         _otpControllers[index - 1].text.length,
                                   );
@@ -134,7 +134,7 @@ class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
                               }
                             },
                             validator: (val) {
-                              if (_getOtpString().length < 4) {
+                              if (_getOtpString().length < 6) {
                                 return null;
                               }
                               return null;
@@ -143,13 +143,13 @@ class _OTPVerificationScreenState extends ConsumerState<OTPVerificationScreen> {
                         );
                       }),
                     ),
-
                     ResponsiveSizedBox(height: 32),
                     FilledButton(
                       onPressed: authState.status == AuthStatus.loading
                           ? null
                           : () async {
-                              router.goNamed(RouteConstantsNames.resetPassword);
+                              authNotifier
+                                  .verifyOTP(int.parse(_getOtpString()));
                             },
                       style: ButtonStyle(),
                       child: Row(

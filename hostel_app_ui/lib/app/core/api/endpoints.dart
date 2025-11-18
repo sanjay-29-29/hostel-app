@@ -9,7 +9,8 @@ class Endpoints {
   static const String userBase = 'users/';
   static const String allUsers = userBase + 'all/';
   static const String createInfo = userBase + 'create-info/';
-  static const String forgotPassword = userBase + 'forgot-password/email/';
+  static const String forgotPassword = userBase + 'forgot-password/';
+  static const String verifyOTP = userBase + 'verify-otp/';
 
   static const String waste = 'wastes/';
 }

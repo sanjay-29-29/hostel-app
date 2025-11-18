@@ -37,7 +37,7 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
-    // final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
     final error = authState.error;
 
     return IntroScaffold(
@@ -63,21 +63,17 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                       hintText: 'Email or phone number',
-                      errorText: error?.getFieldErrors('username')?[0],
+                      errorText: error?.getFieldErrors('email')?[0],
                     ),
-                    // validator: Validators.email,
                   ),
                   ResponsiveSizedBox(height: 32),
                   FilledButton(
                     onPressed: authState.status == AuthStatus.loading
                         ? null
                         : () async {
-                            // await authNotifier.sendOTP(
-                            //     _emailController.text.trim());
-                            router.pushNamed(
-                              RouteConstantsNames.otpVerification,
-                            );
-                        },
+                            await authNotifier
+                                .requestOTP(_emailController.text.trim());
+                          },
                     style: ButtonStyle(),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

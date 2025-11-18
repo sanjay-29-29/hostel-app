@@ -3,6 +3,7 @@
   { "model": "users.role", "pk": 2, "fields": { "name": "Floor Warden" } },
   { "model": "users.role", "pk": 3, "fields": { "name": "Caretaker" } },
   { "model": "users.role", "pk": 4, "fields": { "name": "User" } },
+  { "model": "users.role", "pk": 5, "fields": { "name": "Admin" } },
   {
     "model": "users.customuser",
     "pk": 1,

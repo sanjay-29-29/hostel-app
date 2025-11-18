@@ -2,6 +2,7 @@ import random
 from django.contrib.auth import get_user_model
 from django.db.models import Prefetch
 from rest_framework import viewsets
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 import rest_framework.generics as rest_generics
 from rest_framework.response import Response
@@ -52,6 +53,15 @@ class SearchAllUsersView(rest_generics.ListAPIView):
         )
     )
 
+    def get_queryset(self):
+        if self.request.user.role.name == "Admin":
+            return self.queryset
+        return self.queryset.filter(
+            hostels__name__in=[
+                hostel.name for hostel in self.request.user.hostels.all()
+            ]
+        )
+
 
 class CreateUpdateUserView(viewsets.ModelViewSet):
 
@@ -98,13 +108,10 @@ class PasswordResetOTPView(APIView):
     permission_classes = []
 
     def get(self, request, *args, **kwargs):
-        serializer = users_serializer.OTPRequestSerializer(
-            data=request.query_params
-        )
+        serializer = users_serializer.OTPRequestSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data.get("email")
         User = get_user_model()
-
 
         try:
             user = User.objects.get(email=email)
@@ -114,7 +121,6 @@ class PasswordResetOTPView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        
         OTP.objects.filter(user=user, is_used=False).update(is_used=True)
         otp_code = random.randint(100000, 999999)
         OTP.objects.create(user=user, code=otp_code)
@@ -130,10 +136,7 @@ class PasswordResetOTPView(APIView):
         email = serializer.validated_data.get("email")
         code = serializer.validated_data.get("otp")
 
-        data = OTPValidateView.validate_otp(
-            email,
-            code
-        )
+        data = OTPValidateView.validate_otp(email, code)
 
         if isinstance(data, Response):
             return data
@@ -150,6 +153,7 @@ class PasswordResetOTPView(APIView):
             {"detail": "Password has been reset successfully."},
             status=status.HTTP_200_OK,
         )
+
 
 class OTPValidateView(APIView):
     authentication_classes = []
@@ -184,7 +188,7 @@ class OTPValidateView(APIView):
         otp = serializer.validated_data.get("otp")
 
         is_valid = OTPValidateView.validate_otp(email, otp)
- 
+
         if isinstance(is_valid, Response):
             return is_valid
 

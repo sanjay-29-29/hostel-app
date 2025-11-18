@@ -54,7 +54,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
-    // final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
     final error = authState.error;
 
     // ignore: deprecated_member_use
@@ -71,7 +71,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             children: [
               ResponsiveText(
                 'RESET PASSWORD',
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 32),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w700, fontSize: 32),
               ),
               const ResponsiveSizedBox(height: 32),
               Form(
@@ -85,19 +86,12 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                           decoration: InputDecoration(
                             labelText: 'NEW PASSWORD',
                             hintText: 'Enter Your New Password',
-                            errorText: error?.getFieldErrors('new_password')?[0],
+                            errorText:
+                                error?.getFieldErrors('new_password')?[0],
                           ),
                           obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Password is required';
-                            if (value.length < 8)
-                              return 'Password must be at least 8 characters';
-                            return null;
-                          },
                         ),
                         const ResponsiveSizedBox(height: 32),
-      
                         TextFormField(
                           controller: _confirmPasswordController,
                           decoration: InputDecoration(
@@ -116,33 +110,26 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             ),
                           ),
                           obscureText: !showPassword,
-                          validator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Please confirm password';
-                            if (value != _passwordController.text)
-                              return 'Passwords do not match';
-                            return null;
-                          },
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-      
               const SizedBox(height: 32),
               FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: _isFormValid
+                  backgroundColor: !authState.isLoading
                       ? ColorConstants.darkRed
                       : Colors.grey,
                 ),
-                onPressed: authState.status == AuthStatus.loading
+                onPressed: authState.isLoading == true
                     ? null
                     : () async {
-                        if (_formKey.currentState!.validate()) {
-                          ToastHelper.showInfo('Updating password...');
-                        }
+                        authNotifier.changePassword(
+                          _passwordController.text,
+                          _confirmPasswordController.text,
+                        );
                       },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

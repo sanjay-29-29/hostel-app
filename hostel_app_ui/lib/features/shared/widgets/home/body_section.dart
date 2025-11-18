@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hostel_app/app/core/constants/assets_constants.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
+import 'package:hostel_app/app/provider/app_provider.dart';
 import 'package:hostel_app/app/router/router.dart';
 import 'package:hostel_app/app/wrapper_class/responsive_text.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 
-class HomeBody extends StatelessWidget {
+class HomeBody extends ConsumerWidget {
   final UserModel user;
   const HomeBody({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.read(authNotifierProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: GridView.count(
@@ -37,15 +41,16 @@ class HomeBody extends StatelessWidget {
             title2: 'RECORD',
             onTap: () {},
           ),
-          _buildMenuCard(
-            context,
-            imagePath: IconAssetConstants.usersIcon,
-            title1: 'MANAGE',
-            title2: 'USERS',
-            onTap: () {
-              router.pushNamed(RouteConstantsNames.manageMembers);
-            },
-          ),
+          if (authState.user!.role.name == 'Warden')
+            _buildMenuCard(
+              context,
+              imagePath: IconAssetConstants.usersIcon,
+              title1: 'MANAGE',
+              title2: 'USERS',
+              onTap: () {
+                router.pushNamed(RouteConstantsNames.manageMembers);
+              },
+            ),
           _buildMenuCard(
             context,
             imagePath: IconAssetConstants.profileIcon,
