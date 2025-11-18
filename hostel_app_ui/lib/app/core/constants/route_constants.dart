@@ -10,6 +10,9 @@ class RouteConstants {
   static const String profile = '/profile';
   static const String wasteManage = '/waste-manage';
   static const String reportView = '/report-view';
+  static const String forgetPassword = '/forget-password';
+  static const String resetPassword = '/reset-password';
+  static const String otpVerification = '/otp-verification';
 }
 
 class RouteConstantsNames {
@@ -24,4 +27,7 @@ class RouteConstantsNames {
   static const String profile = 'profile';
   static const String wasteManage = 'waste-manage';
   static const String reportView = 'report-view';
+  static const String forgetPassword = 'forget-password';
+  static const String resetPassword = 'reset-password';
+  static const String otpVerification = 'otp-verification';
 }

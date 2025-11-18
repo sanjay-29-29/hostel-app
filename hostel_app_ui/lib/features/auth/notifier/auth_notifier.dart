@@ -18,20 +18,23 @@ class AuthState {
   final UserModel? user;
   final BackendError? error;
   final BaseInfoModel? baseInfo;
+  final bool isLoading;
 
-  const AuthState({required this.status, this.user, this.baseInfo, this.error});
+  const AuthState({required this.status, this.user, this.baseInfo, this.error, this.isLoading = false});
 
   AuthState copyWith({
     AuthStatus? status,
     BackendError? error,
     BaseInfoModel? baseInfo,
     UserModel? user,
+    bool? isLoading,
   }) {
     return AuthState(
       status: status ?? this.status,
       user: user ?? this.user,
       baseInfo: baseInfo ?? this.baseInfo,
       error: error ?? this.error,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 
@@ -118,4 +121,32 @@ class AuthNotifier extends Notifier<AuthState> {
     router.go(RouteConstantsNames.login);
     secureStorage.deleteAll();
   }
+
+  Future<void> sendOTP(String username) async{
+    state = state.copyWith(isLoading: true);
+    final response = await _repository.sendOTP(username);
+    response.fold(
+      onSuccess: (_){
+        ToastHelper.showSuccess('OTP sent successfully');
+        router.pushNamed(RouteConstantsNames.otpVerification);
+        state = state.copyWith(isLoading: false);
+      },
+      onFailure: (error){
+        if (error.detail != null) {
+          ToastHelper.showError(error.detail ?? 'Something went wrong');
+        } else if (error.nonFieldErrors != null) {
+          ToastHelper.showError(
+            error.nonFieldErrors ?? 'Something went wrong',
+          );
+        }
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          error: error,
+          isLoading: false,
+        );
+      },
+    );
+  }
+
+  
 }

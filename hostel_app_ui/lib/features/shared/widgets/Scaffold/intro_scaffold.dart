@@ -18,11 +18,11 @@ class _IntroScaffoldState extends State<IntroScaffold> {
     return Container(
       child: Stack(
         children: [
-          Image.asset(ImageConstants.scaffoldDecoration),
           Scaffold(
             backgroundColor: ColorConstants.bgLight,
             body: Center(child: SingleChildScrollView(child: widget.body)),
           ),
+          Image.asset(ImageConstants.scaffoldDecoration),
         ],
       ),
     );

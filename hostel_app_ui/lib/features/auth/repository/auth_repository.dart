@@ -13,6 +13,8 @@ abstract class AuthRepository {
   );
   Future<Result<int, BackendError>> signup(SignupModel signupModel);
   Future<Result<BaseInfoModel, BackendError>> fetchBaseInfo();
+
+  Future<Result<void, BackendError>> sendOTP(String username);
 }
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -31,12 +33,10 @@ class AuthRepositoryImpl extends AuthRepository {
         data: {'username': username, 'password': password},
       );
       print(response.data);
-      return Success(
-        (
-          UserModel.fromJson(response.data),
-          response.data['token'],
-        ),
-      );
+      return Success((
+        UserModel.fromJson(response.data),
+        response.data['token'],
+      ));
     } on DioException catch (e) {
       final data = e.response?.data;
       return Failure(BackendError.fromJson(data));
@@ -62,6 +62,19 @@ class AuthRepositoryImpl extends AuthRepository {
       final response = await _dioClient.get(Endpoints.createInfo);
       print(response.statusCode);
       return Success(BaseInfoModel.fromJson(response.data));
+    } on DioException catch (e) {
+      return Failure(BackendError.fromJson(e.response?.data));
+    }
+  }
+
+  @override
+  Future<Result<void, BackendError>> sendOTP(String username) async {
+    try {
+      final response = await _dioClient.post(
+        Endpoints.forgotPassword,
+        data: {'username': username},
+      );
+      return Success(response.data);
     } on DioException catch (e) {
       return Failure(BackendError.fromJson(e.response?.data));
     }

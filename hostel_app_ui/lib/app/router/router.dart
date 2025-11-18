@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hostel_app/app/core/constants/route_constants.dart';
+import 'package:hostel_app/features/auth/presentation/forget_password.dart';
+import 'package:hostel_app/features/auth/presentation/otp_screen.dart';
+import 'package:hostel_app/features/auth/presentation/reset_password.dart';
 import 'package:hostel_app/features/home/presentation/home_screen.dart';
 import 'package:hostel_app/features/shared/models/user/user_model.dart';
 import 'package:hostel_app/features/user/presentation/add_user_screen.dart';
@@ -57,9 +60,7 @@ final router = GoRouter(
       name: RouteConstantsNames.wasteManage,
       builder: (context, state) {
         final data = state.extra as Map<String, dynamic>;
-        return WasteManageScreen(
-          kitchen: data['kitchen'],
-        );
+        return WasteManageScreen(kitchen: data['kitchen']);
       },
     ),
     GoRoute(
@@ -83,6 +84,20 @@ final router = GoRouter(
         return EditProfileScreen(user: user);
       },
     ),
+    GoRoute(
+      path: RouteConstants.forgetPassword,
+      name: RouteConstantsNames.forgetPassword,
+      builder: (context, state) => ForgetPasswordScreen(),
+    ),
+    GoRoute(path: 
+      RouteConstants.otpVerification,
+      name: RouteConstantsNames.otpVerification,
+      builder: (context, state) => OTPVerificationScreen(),
+    ),
+    GoRoute(path: RouteConstants.resetPassword, name: RouteConstantsNames.resetPassword, builder: (context, state) {
+      // final email = state.extra as String;
+      return const ResetPasswordScreen();
+    }),
   ],
   errorBuilder: (context, state) =>
       Scaffold(body: Center(child: Text('Page not found'))),
