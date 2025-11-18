@@ -6,4 +6,4 @@ class Hostel(models.Model):
     students_count = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
