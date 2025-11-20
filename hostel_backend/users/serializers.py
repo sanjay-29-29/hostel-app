@@ -122,6 +122,7 @@ class OTPRequestSerializer(serializers.Serializer):
 class OTPValidateSerializer(OTPRequestSerializer):
     otp = serializers.IntegerField()
 
+
 class UserPasswordResetSerializer(serializers.Serializer):
     otp = serializers.IntegerField()
     new_password = serializers.CharField(write_only=True)

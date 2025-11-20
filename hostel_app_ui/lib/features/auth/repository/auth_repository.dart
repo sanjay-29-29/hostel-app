@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hostel_app/app/core/api/endpoints.dart';
 import 'package:hostel_app/app/core/result/result.dart';
+import 'package:hostel_app/app/core/utils/firebaseapi.dart';
 import 'package:hostel_app/features/auth/model/reset_password_model.dart';
 import 'package:hostel_app/features/auth/model/signup_model.dart';
 import 'package:hostel_app/features/shared/models/base_info/base_info_model.dart';
@@ -33,9 +35,14 @@ class AuthRepositoryImpl extends AuthRepository {
     String password,
   ) async {
     try {
+      final fcm_token = await FirebaseMessaging.instance.getToken();
       final response = await _dioClient.post(
         Endpoints.login,
-        data: {'username': username, 'password': password},
+        data: {
+          'username': username,
+          'password': password,
+          'fcm_token': fcm_token,
+        },
       );
       print(response.data);
       return Success(

@@ -18,19 +18,10 @@ class PasswordResetState {
   final String? email;
   final int? otp;
 
-  const PasswordResetState({
-    this.email,
-    this.otp,
-  });
+  const PasswordResetState({this.email, this.otp});
 
-  PasswordResetState copyWith({
-    String? email,
-    int? otp,
-  }) {
-    return PasswordResetState(
-      email: email ?? this.email,
-      otp: otp ?? this.otp,
-    );
+  PasswordResetState copyWith({String? email, int? otp}) {
+    return PasswordResetState(email: email ?? this.email, otp: otp ?? this.otp);
   }
 }
 
@@ -104,7 +95,9 @@ class AuthNotifier extends Notifier<AuthState> {
       onSuccess: (model) {
         state = state.copyWith(baseInfo: model);
       },
-      onFailure: (error) {},
+      onFailure: (error) {
+        ToastHelper.showError(error.nonFieldErrors ?? 'Something went wrong');
+      },
     );
     print(response);
   }

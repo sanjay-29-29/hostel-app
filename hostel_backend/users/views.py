@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Prefetch
 from rest_framework import viewsets
 from rest_framework import status
+from fcm_django.models import FCMDevice
 from rest_framework.authtoken.models import Token
 import rest_framework.generics as rest_generics
 from rest_framework.permissions import IsAuthenticated
@@ -33,7 +34,14 @@ class UserLoginView(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
 
         user_data = users_serializer.FetchAllUserSerializer(user).data
+        fcm_token = request.data.get("fcm_token", None)
 
+        if fcm_token is not None:
+            FCMDevice.objects.get_or_create(
+                user=user,
+                registration_id=fcm_token,
+                defaults={"active": True, "type": "android"},
+            )
         return Response(
             {
                 "token": token.key,
