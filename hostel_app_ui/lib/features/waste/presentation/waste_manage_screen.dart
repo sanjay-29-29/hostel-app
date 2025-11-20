@@ -15,6 +15,12 @@ import 'package:hostel_app/features/shared/models/kitchen/kitchen_model.dart';
 import 'package:hostel_app/features/shared/models/timing/timing_model.dart';
 import 'package:hostel_app/features/shared/models/hostel/hostel_model.dart';
 
+class AttendanceValues {
+  int present;
+  int absent;
+  AttendanceValues({required this.present, required this.absent});
+}
+
 class WasteManageScreen extends ConsumerStatefulWidget {
   final KitchenModel kitchen;
   const WasteManageScreen({super.key, required this.kitchen});
@@ -24,10 +30,14 @@ class WasteManageScreen extends ConsumerStatefulWidget {
 }
 
 class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
-  DateTime selectedDate = DateTime.now();
   Map<HostelModel, AttendanceValues> attendances = {};
-  TimingModel? timing;
   Map<int, HostelModel> hostelMap = {};
+  Map<int, TextEditingController> presentControllers = {};
+  Map<int, VoidCallback> listeners = {};
+  int totalPresent = 0;
+  int totalAbsent = 0;
+  TimingModel? timing;
+  DateTime selectedDate = DateTime.now();
 
   final coffeeCtrl = TextEditingController();
   final studentCtrl = TextEditingController();
@@ -37,10 +47,61 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
   @override
   void initState() {
     super.initState();
+    resetAttendance();
+    _initControllers();
+    _recalculateTotals();
+  }
+
+  @override
+  void dispose() {
+    for (final controller in presentControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void resetAttendance() {
     for (final h in widget.kitchen.hostels) {
       hostelMap[h.id] = h;
       attendances[h] = AttendanceValues(present: h.studentsCount, absent: 0);
     }
+  }
+
+  void _initControllers() {
+    for (final hostel in widget.kitchen.hostels) {
+      final ctrl = TextEditingController(
+        text: attendances[hostel]!.present.toString(),
+      );
+      void l() => _onChanged(hostel, ctrl);
+      ctrl.addListener(l);
+      presentControllers[hostel.id] = ctrl;
+      listeners[hostel.id] = l;
+    }
+  }
+
+  void _onChanged(HostelModel hostel, TextEditingController controller) {
+    final total = hostel.studentsCount;
+    final p = int.tryParse(controller.text) ?? 0;
+    final present = p.clamp(0, total);
+    if (present != p) controller.text = present.toString();
+    final absent = total - present;
+
+    attendances[hostel] = AttendanceValues(present: present, absent: absent);
+    _recalculateTotals();
+  }
+
+  void _recalculateTotals() {
+    int tP = 0;
+    int tA = 0;
+    for (final h in widget.kitchen.hostels) {
+      final a = attendances[h]!;
+      tP += a.present;
+      tA += a.absent;
+    }
+    setState(() {
+      totalPresent = tP;
+      totalAbsent = tA;
+    });
   }
 
   bool _isOld(DateTime d) {
@@ -56,39 +117,72 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
     final state = ref.read(wasteManageNotifierProvider);
 
     if (state.waste == null) {
-      // no data
+      // no data - reset to defaults
       for (final h in widget.kitchen.hostels) {
         attendances[h] = AttendanceValues(present: h.studentsCount, absent: 0);
+        // Update controllers
+        final controller = presentControllers[h.id];
+        if (controller != null) {
+          controller.removeListener(listeners[h.id]!);
+          controller.text = h.studentsCount.toString();
+          controller.addListener(listeners[h.id]!);
+        }
       }
       coffeeCtrl.clear();
       cookedCtrl.clear();
       studentCtrl.clear();
       milkCtrl.clear();
-      setState(() {});
+      _recalculateTotals();
       return;
     }
 
-    final w = state.waste!;
-    cookedCtrl.text = w.foodCookedWaste?.toString() ?? "";
-    studentCtrl.text = w.studentWaste?.toString() ?? "";
-    coffeeCtrl.text = w.coffeWaste?.toString() ?? "";
+    final waste = state.waste!;
+    cookedCtrl.text = waste.foodCookedWaste?.toString() ?? '';
+    studentCtrl.text = waste.studentWaste?.toString() ?? '';
+    coffeeCtrl.text = waste.coffeWaste?.toString() ?? '';
 
     attendances.clear();
-    for (final a in w.attendances) {
-      final hostel = hostelMap[a.hostelId]!;
+    for (final attendance in waste.attendances) {
+      final hostel = hostelMap[attendance.hostelId]!;
       attendances[hostel] = AttendanceValues(
-        present: a.studentsPresent,
-        absent: a.studentsAbsent,
+        present: attendance.studentsPresent,
+        absent: attendance.studentsAbsent,
       );
+
+      final controller = presentControllers[hostel.id];
+      if (controller != null) {
+        controller.removeListener(listeners[hostel.id]!);
+        controller.text = attendance.studentsPresent.toString();
+        controller.addListener(listeners[hostel.id]!);
+      }
     }
 
-    for (final h in widget.kitchen.hostels) {
+    for (final hostel in widget.kitchen.hostels) {
       attendances.putIfAbsent(
-        h,
-        () => AttendanceValues(present: h.studentsCount, absent: 0),
+        hostel,
+        () => AttendanceValues(present: hostel.studentsCount, absent: 0),
       );
+
+      if (!presentControllers.containsKey(hostel.id)) {
+        final ctrl = TextEditingController(
+          text: hostel.studentsCount.toString(),
+        );
+        void l() => _onChanged(hostel, ctrl);
+        ctrl.addListener(l);
+        presentControllers[hostel.id] = ctrl;
+        listeners[hostel.id] = l;
+      }
     }
+
+    _recalculateTotals();
     setState(() {});
+  }
+
+  void handleDateChange(DateTime d) {
+    setState(() {
+      selectedDate = d;
+      timing = null;
+    });
   }
 
   @override
@@ -113,92 +207,90 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
                 children: [
                   DateSection(
                     selectedDate: selectedDate,
-                    onDateChanged: (d) {
-                      setState(() {
-                        selectedDate = d;
-                        timing = null;
-                      });
-                    },
+                    onDateChanged: handleDateChange,
                   ),
-
+                  SizedBox(height: 24),
                   DateSelector(
                     selectedDate: selectedDate,
-                    onSelect: (d) {
-                      setState(() {
-                        selectedDate = d;
-                        timing = null;
-                      });
-                    },
+                    onSelect: handleDateChange,
                   ),
-
-                  if (!isOld)
-                    CustomDropdownField<TimingModel>(
-                      label: 'Select Meal Time',
-                      hint: 'Choose a meal time',
-                      items: baseInfo?.timings ?? [],
-                      value: timing,
-                      getLabel: (m) => m.name,
-                      onChanged: (v) {
-                        setState(() => timing = v);
-                        _loadWaste();
-                      },
-                    ),
-
-                  if (isOld && timing == null) const SizedBox(),
-
-                  if (isOld && !hasData)
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        children: const [
-                          Text(
-                            'Out of Date Selected',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Cannot add or edit data for past dates.',
-                            style: TextStyle(color: Colors.red, fontSize: 16),
-                          ),
-                        ],
-                      ),
-                    )
-                  else if (timing != null)
+                  SizedBox(height: 24),
+                  if (!wasteState.isFetching)
                     Column(
                       children: [
-                        if (wasteState.waste?.updatedBy != null)
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Last updated by: ${wasteState.waste?.updatedBy}',
-                              style: TextStyle(color: Colors.black54),
-                            ),
+                        if (!isOld)
+                          CustomDropdownField<TimingModel>(
+                            label: 'Select Meal Time',
+                            hint: 'Choose a meal time',
+                            items: baseInfo?.timings ?? [],
+                            value: timing,
+                            getLabel: (m) => m.name,
+                            onChanged: (v) {
+                              setState(() => timing = v);
+                              _loadWaste();
+                            },
                           ),
 
-                        StudentCountSection(
-                          hostels: widget.kitchen.hostels,
-                          attendances: attendances,
-                          editable:
-                              editable && hasData == false ||
-                              editable && hasData == true,
-                        ),
+                        if (isOld && timing == null) const SizedBox(),
 
-                        WasteSection(
-                          coffeeWasteController: coffeeCtrl,
-                          selectedTiming: timing,
-                          studentWasteController: studentCtrl,
-                          cookedWasteController: cookedCtrl,
-                          milkWasteController: milkCtrl,
-                          editable: editable && hasData,
-                        ),
+                        if (isOld && !hasData)
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              children: const [
+                                Text(
+                                  'Out of Date Selected',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  'Cannot add or edit data for past dates.',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else if (timing != null)
+                          Column(
+                            children: [
+                              if (wasteState.waste?.updatedBy != null)
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    'Last updated by: ${wasteState.waste?.updatedBy}',
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ),
+                              StudentCountSection(
+                                hostels: widget.kitchen.hostels,
+                                attendances: attendances,
+                                presentControllers: presentControllers,
+                                totalAbsent: totalAbsent,
+                                totalPresent: totalPresent,
+                              ),
+                              WasteSection(
+                                coffeeWasteController: coffeeCtrl,
+                                selectedTiming: timing,
+                                studentWasteController: studentCtrl,
+                                cookedWasteController: cookedCtrl,
+                                milkWasteController: milkCtrl,
+                                editable: true,
+                              ),
 
-                        if (!isOld)
-                          PrimaryButton(text: 'Save', onPressed: _save),
+                              if (!isOld)
+                                PrimaryButton(text: 'Save', onPressed: _save),
+                            ],
+                          ),
                       ],
-                    ),
+                    )
+                  else
+                    CircularProgressIndicator(),
                 ],
               ),
             ),
@@ -219,7 +311,7 @@ class _WasteManageScreenState extends ConsumerState<WasteManageScreen> {
           ),
         )
         .toList();
-
+    // TODO: handle update after create waste without changing date
     final model = WasteCreateModel(
       kitchen: widget.kitchen.id,
       timing: timing!.id,

@@ -9,7 +9,7 @@ class CreateUserModel {
   final String phoneNumber;
   final String password;
   final int role;
-  final int hostel;
+  final List<int> hostels;
 
   CreateUserModel({
     required this.name,
@@ -17,7 +17,7 @@ class CreateUserModel {
     required this.phoneNumber,
     required this.password,
     required this.role,
-    required this.hostel,
+    required this.hostels,
   });
 
   factory CreateUserModel.fromJson(Map<String, dynamic> json) =>

@@ -34,13 +34,13 @@ class HomeBody extends ConsumerWidget {
               );
             },
           ),
-          _buildMenuCard(
-            context,
-            imagePath: IconAssetConstants.attendanceIcon,
-            title1: 'STUDENTS',
-            title2: 'RECORD',
-            onTap: () {},
-          ),
+          // _buildMenuCard(
+          //   context,
+          //   imagePath: IconAssetConstants.attendanceIcon,
+          //   title1: 'STUDENTS',
+          //   title2: 'RECORD',
+          //   onTap: () {},
+          // ),
           if (authState.user!.role.name == 'Warden')
             _buildMenuCard(
               context,

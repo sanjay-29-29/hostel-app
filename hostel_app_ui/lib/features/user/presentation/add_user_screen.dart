@@ -52,7 +52,7 @@ class _AddMemberScreenState extends ConsumerState<AddUserScreen> {
             name: _userNameController.text,
             password: _passwordController.text,
             role: _selectedRole!.id,
-            hostel: _selectedHostel!.id,
+            hostels: [_selectedHostel!.id],
           ),
         );
   }

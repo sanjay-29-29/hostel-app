@@ -62,7 +62,7 @@ class WasteViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         self.send_notifications(
-            instance.id,
+            instance.kitchen.id,
             CustomNotification(
                 "Hostel App",
                 f"{self.request.user.name} updated {instance.timing.name} for {instance.date}",
@@ -95,4 +95,3 @@ class WasteViewSet(ModelViewSet):
                     ),
                 )
             )
-
