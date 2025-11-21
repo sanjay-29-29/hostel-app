@@ -1,0 +1,62 @@
+from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
+
+from users.models import OTP, HostelMembership, Role
+
+
+@admin.register(get_user_model())
+class CustomUserAdmin(UserAdmin):
+    ordering = ("email",)
+    list_display = ("email", "name", "is_staff")
+    search_fields = ("first_name", "last_name", "email")
+    fieldsets = (
+        (
+            None,
+            {"fields": ("email", "password", "role", "fcm_token")},
+        ),
+        (("Personal info"), {"fields": ("name", "phone_number")}),
+        (
+            ("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "email",
+                    "name",
+                    "role",
+                    "password1",
+                    "password2",
+                ),
+            },
+        ),
+    )
+
+
+@admin.register(Role)
+class RoleAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(HostelMembership)
+class HostelMembershipAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(OTP)
+class OTPAdmin(admin.ModelAdmin):
+    pass
